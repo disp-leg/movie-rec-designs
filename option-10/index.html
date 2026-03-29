@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Crate Dig - Film Discoveries</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#2C2118;--bg2:#3A2E22;--card:#3E3128;--card2:#4A3D32;
+--cream:#F2E8D9;--amber:#D4A052;--rust:#B8603F;--sage:#8A9A6C;
+--vinyl:#1A1412;--groove:#2A221C;
+--txt:rgba(242,232,217,.95);--txt2:rgba(242,232,217,.65);--txt3:rgba(242,232,217,.4);
+--gold:#D4A052;
+}
+html{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;position:relative;
+background:linear-gradient(180deg,#2C2118,#342820 50%,#2C2118)}
+::-webkit-scrollbar{width:0}
+
+/* Texture overlay */
+body::before{content:"";position:fixed;inset:0;z-index:0;opacity:.04;
+background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+pointer-events:none}
+
+.cnt{position:relative;z-index:1;padding-bottom:100px}
+
+/* NAV */
+nav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;z-index:100;padding:52px 20px 12px;
+background:rgba(44,33,24,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(242,232,217,.08);transition:background .3s}
+nav.sc{background:rgba(44,33,24,.95)}
+.ni{display:flex;align-items:center;justify-content:space-between}
+.nbr{display:flex;align-items:center;gap:10px}
+.nlogo{width:32px;height:32px;border-radius:50%;background:var(--vinyl);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;position:relative}
+.nlogo::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);position:absolute}
+.ntitle{font-family:'Instrument Serif',serif;font-size:22px;letter-spacing:-.5px;color:var(--cream)}
+.nacts{display:flex;gap:8px}
+.nbtn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(242,232,217,.12);background:rgba(242,232,217,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt2);transition:all .2s}
+.nbtn:active{transform:scale(.9);background:rgba(242,232,217,.12)}
+
+/* HERO — Now Playing */
+.hero{padding:108px 16px 20px}
+.now-playing{background:var(--card);border-radius:20px;border:1px solid rgba(242,232,217,.08);overflow:hidden;cursor:pointer;transition:transform .3s}
+.now-playing:active{transform:scale(.98)}
+.np-label{padding:16px 20px 0;display:flex;align-items:center;gap:8px}
+.np-dot{width:8px;height:8px;border-radius:50%;background:var(--rust);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.np-txt{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--rust)}
+.np-body{display:flex;align-items:center;padding:16px 20px 20px;gap:20px}
+.disc-wrap{width:120px;height:120px;flex-shrink:0;position:relative}
+.disc{width:120px;height:120px;border-radius:50%;background:var(--vinyl);position:relative;animation:spin 4s linear infinite;animation-play-state:running;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.disc::before{content:"";position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(242,232,217,.06);
+background:repeating-radial-gradient(circle at center,transparent,transparent 2px,rgba(242,232,217,.03) 2px,rgba(242,232,217,.03) 3px)}
+.disc::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px var(--vinyl),0 0 0 5px rgba(212,160,82,.3)}
+.disc-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;overflow:hidden}
+.disc-label img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.np-info{flex:1;min-width:0}
+.np-title{font-family:'Instrument Serif',serif;font-size:22px;line-height:1.2;margin-bottom:4px;color:var(--cream)}
+.np-meta{font-size:12px;color:var(--txt3);margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.np-rate{color:var(--gold);font-weight:600}
+.np-desc{font-size:12px;line-height:1.5;color:var(--txt2);font-weight:300;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.np-badges{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
+.sb{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:500;background:rgba(212,160,82,.12);border:1px solid rgba(212,160,82,.2);color:var(--amber)}
+.sb.f{background:rgba(242,232,217,.06);border-color:rgba(242,232,217,.1);color:var(--txt2)}
+
+/* CRATE SECTION */
+.crate{padding:0 16px;margin-top:28px}
+.crate-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;opacity:0;transform:translateY(16px);transition:all .5s ease}
+.crate-hdr.v{opacity:1;transform:translateY(0)}
+.crate-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.ct1 .crate-icon{background:rgba(184,96,63,.15);color:var(--rust);border:1px solid rgba(184,96,63,.25)}
+.ct2 .crate-icon{background:rgba(212,160,82,.12);color:var(--amber);border:1px solid rgba(212,160,82,.2)}
+.ct3 .crate-icon{background:rgba(138,154,108,.15);color:var(--sage);border:1px solid rgba(138,154,108,.25)}
+.ct4 .crate-icon{background:rgba(242,232,217,.08);color:var(--cream);border:1px solid rgba(242,232,217,.15)}
+.crate-info h2{font-family:'Instrument Serif',serif;font-size:18px;font-weight:400;letter-spacing:-.3px}
+.crate-info p{font-size:11px;color:var(--txt3);font-weight:300;margin-top:1px}
+
+/* HORIZONTAL CRATE BROWSER */
+.crate-scroll{display:flex;gap:14px;overflow-x:auto;padding:4px 0 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.crate-scroll::-webkit-scrollbar{display:none}
+
+/* SLEEVE CARD */
+.sleeve{width:155px;flex-shrink:0;scroll-snap-align:start;cursor:pointer;transition:transform .3s;opacity:0;transform:translateY(20px) rotate(1deg);position:relative}
+.sleeve.v{opacity:1;transform:translateY(0) rotate(0deg)}
+.sleeve:active{transform:scale(.96) rotate(-1deg)}
+.sleeve-art{width:155px;height:155px;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 6px 24px rgba(0,0,0,.35),0 1px 3px rgba(0,0,0,.2);border:1px solid rgba(242,232,217,.06)}
+.sleeve-art img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.sleeve:active .sleeve-art img{transform:scale(1.06)}
+/* Vinyl peeking out */
+.sleeve-vinyl{position:absolute;top:50%;right:-12px;transform:translateY(-50%);width:60px;height:60px;border-radius:50%;background:var(--vinyl);opacity:0;transition:all .35s ease;box-shadow:-2px 0 8px rgba(0,0,0,.3)}
+.sleeve-vinyl::before{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(242,232,217,.06);background:repeating-radial-gradient(circle at center,transparent,transparent 1px,rgba(242,232,217,.04) 1px,rgba(242,232,217,.04) 2px)}
+.sleeve-vinyl::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.sleeve:hover .sleeve-vinyl,.sleeve:active .sleeve-vinyl{opacity:1;right:-18px}
+.sleeve-bot{padding:8px 2px 0}
+.sleeve-title{font-size:13px;font-weight:600;line-height:1.25;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sleeve-meta{font-size:11px;color:var(--txt3);margin-top:2px;display:flex;gap:6px;align-items:center}
+.sleeve-meta .rt{color:var(--gold);font-weight:600;font-size:11px}
+
+/* FULL CRATE — vertical list for last tier */
+.crate-list{display:flex;flex-direction:column;gap:10px}
+.record{display:flex;gap:14px;padding:12px;background:var(--card);border-radius:14px;border:1px solid rgba(242,232,217,.06);cursor:pointer;transition:all .3s;opacity:0;transform:translateX(-16px)}
+.record.v{opacity:1;transform:translateX(0)}
+.record:active{transform:scale(.98);background:var(--card2)}
+.rec-art{width:70px;height:70px;border-radius:50%;overflow:hidden;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.3);border:2px solid rgba(242,232,217,.08);position:relative}
+.rec-art img{width:100%;height:100%;object-fit:cover}
+.rec-art::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--bg);border:1px solid rgba(242,232,217,.1)}
+.rec-info{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.rec-title{font-size:14px;font-weight:600;line-height:1.25;color:var(--cream);margin-bottom:2px}
+.rec-meta{font-size:11px;color:var(--txt3);display:flex;gap:6px;align-items:center;margin-bottom:4px}
+.rec-tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:9px;padding:2px 6px;background:rgba(242,232,217,.05);border:1px solid rgba(242,232,217,.08);border-radius:5px;color:var(--txt3)}
+
+/* DETAIL PANEL */
+.dov{position:fixed;inset:0;z-index:200;background:rgba(44,33,24,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .35s}
+.dov.on{opacity:1;pointer-events:all}
+.dp{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:430px;max-height:88vh;z-index:201;background:var(--bg2);border:1px solid rgba(242,232,217,.08);border-bottom:none;border-radius:24px 24px 0 0;transition:transform .45s cubic-bezier(.32,.72,0,1);overflow-y:auto;overscroll-behavior:contain}
+.dp.on{transform:translateX(-50%) translateY(0)}
+.dp-handle{width:36px;height:4px;background:rgba(242,232,217,.15);border-radius:2px;margin:12px auto 0}
+.dp-hero{display:flex;align-items:center;justify-content:center;padding:24px 20px 16px;gap:24px;position:relative}
+.dp-disc-w{width:140px;height:140px;position:relative;flex-shrink:0}
+.dp-disc{width:140px;height:140px;border-radius:50%;background:var(--vinyl);animation:spin 3s linear infinite;box-shadow:0 8px 32px rgba(0,0,0,.5);position:relative}
+.dp-disc::before{content:"";position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(242,232,217,.05);background:repeating-radial-gradient(circle at center,transparent,transparent 2px,rgba(242,232,217,.03) 2px,rgba(242,232,217,.03) 3px)}
+.dp-disc::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--vinyl),0 0 0 6px rgba(212,160,82,.3)}
+.dp-disc-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;overflow:hidden}
+.dp-disc-img img{width:100%;height:100%;object-fit:cover}
+.dp-sleeve{width:140px;height:180px;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4);border:1px solid rgba(242,232,217,.08);flex-shrink:0}
+.dp-sleeve img{width:100%;height:100%;object-fit:cover}
+.dp-close{position:absolute;top:12px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(44,33,24,.8);border:1px solid rgba(242,232,217,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt);font-size:18px;z-index:3;line-height:1}
+.dp-close:active{transform:scale(.9)}
+.dp-body{padding:0 20px 40px}
+.dp-body h2{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.15;margin-bottom:4px;color:var(--cream)}
+.dp-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--txt2);margin-bottom:16px}
+.dp-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;margin-top:18px}
+.dp-desc{font-size:14px;line-height:1.65;color:var(--txt2);font-weight:300}
+.dp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dp-tags .tag{font-size:11px;padding:4px 10px}
+.dp-stream{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dp-stream .sb{font-size:12px;padding:5px 12px}
+
+/* SEARCH */
+.sov{position:fixed;inset:0;z-index:150;background:rgba(44,33,24,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .3s;padding:60px 16px 20px}
+.sov.on{opacity:1;pointer-events:all}
+.sbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--card);border:1px solid rgba(242,232,217,.08);border-radius:14px;margin-bottom:16px}
+.sbar input{flex:1;background:transparent;border:none;outline:none;color:var(--cream);font-family:inherit;font-size:16px}
+.sbar input::placeholder{color:var(--txt3)}
+.scan{background:none;border:none;color:var(--amber);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.sres{max-height:calc(100vh - 140px);overflow-y:auto}
+.sres .record{opacity:1;transform:none;margin-bottom:8px}
+
+/* FAB */
+.fab{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:50;pointer-events:none}
+.fbar{display:flex;gap:6px;padding:6px;background:rgba(44,33,24,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(242,232,217,.1);border-radius:18px;pointer-events:all;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.fbi{display:flex;align-items:center;gap:5px;padding:9px 14px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--txt2);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .25s}
+.fbi:active{transform:scale(.94)}
+.fbi.on{background:rgba(212,160,82,.15);color:var(--cream);border-color:rgba(212,160,82,.25)}
+
+@media(hover:hover){
+.sleeve:hover{transform:scale(1.03) rotate(-0.5deg)}
+.sleeve:hover .sleeve-art img{transform:scale(1.06)}
+.record:hover{background:var(--card2);transform:translateX(4px)}
+.nbtn:hover{background:rgba(242,232,217,.1)}
+.fbi:hover{background:rgba(242,232,217,.06);color:var(--cream)}
+}
+</style>
+</head>
+<body>
+<div class="cnt" id="main">
+
+<nav id="nv">
+  <div class="ni">
+    <div class="nbr">
+      <div class="nlogo"></div>
+      <span class="ntitle">Crate Dig</span>
+    </div>
+    <div class="nacts">
+      <button class="nbtn" id="sBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button class="nbtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+</div>
+
+<div class="dov" id="dOv"></div>
+<div class="dp" id="dPan"></div>
+<div class="sov" id="sOv">
+  <div class="sbar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(242,232,217,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="sIn" placeholder="Dig through the crates..." autocomplete="off">
+    <button class="scan" id="sCan">Cancel</button>
+  </div>
+  <div class="sres" id="sRes"></div>
+</div>
+<div class="fab"><div class="fbar">
+  <button class="fbi on" data-f="all"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> All</button>
+  <button class="fbi" data-f="svod"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Stream</button>
+  <button class="fbi" data-f="free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Free</button>
+</div></div>
+
+<script>
+(function(){
+"use strict";
+var D=[
+{id:1,t:"Right at Your Door",y:2006,d:"Chris Gorak",ti:"t1",tg:["post-apocalyptic","thriller","domestic horror"],r:3.1,w:"Dirty bomb hits LA; husband seals himself inside while wife is outside. Paranoia escalates in a sealed space with dwindling trust.",sv:[],av:["Tubi","Pluto TV"],im:"https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg"},
+{id:2,t:"Hidden",y:2015,d:"Matt & Ross Duffer",ti:"t1",tg:["post-apocalyptic","survival","bunker"],r:3.1,w:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg"},
+{id:3,t:"Carriers",y:2009,d:"Alex & David Pastor",ti:"t1",tg:["pandemic","road movie","survival"],r:2.8,w:"Four survivors navigate a pandemic wasteland with strict rules. Moral decay under survival pressure. Stars Chris Pine pre-Star Trek.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg"},
+{id:4,t:"It Comes at Night",y:2017,d:"Trey Edward Shults",ti:"t1",tg:["psychological horror","paranoia","isolation"],r:3.1,w:"Family boarded up during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+{id:5,t:"Await Further Instructions",y:2018,d:"Johnny Kevorkian",ti:"t1",tg:["sci-fi horror","isolation","lockdown"],r:2.5,w:"Family trapped on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions. Sealed-in paranoia.",sv:["Netflix","Shudder"],av:[],im:"https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg",fb:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg"},
+{id:6,t:"Coherence",y:2013,d:"James Ward Byrkit",ti:"t2",tg:["sci-fi","psychological thriller","quantum"],r:3.7,w:"Dinner party goes wrong when a comet passes overhead. Reality fractures. Improvised dialogue. Pure confined-space paranoia.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg"},
+{id:7,t:"Pontypool",y:2008,d:"Bruce McDonald",ti:"t2",tg:["horror","language virus","siege"],r:3.3,w:"Radio DJ trapped as a virus spreads through the English language. Almost entirely one location. Cerebral claustrophobia.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg",fb:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg"},
+{id:8,t:"The Platform",y:2019,d:"Galder Gaztelu-Urrutia",ti:"t2",tg:["sci-fi horror","social allegory","survival"],r:3.4,w:"Vertical prison where food descends level by level. Upper floors feast; lower floors starve. Brutal social allegory.",sv:["Netflix"],av:[],im:"https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg"},
+{id:9,t:"Exam",y:2009,d:"Stuart Hazeldine",ti:"t2",tg:["psychological thriller","single-room","puzzle"],r:3.3,w:"Eight candidates in a single room for a final interview. One question, 80 minutes, strict rules. Dynamics fracture under pressure.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg"},
+{id:10,t:"The Bar",y:2017,d:"Alex de la Iglesia",ti:"t2",tg:["thriller","dark comedy","siege"],r:3.0,w:"Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg",fb:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg"},
+{id:11,t:"Circle",y:2015,d:"Aaron Hann, Mario Miscione",ti:"t3",tg:["sci-fi","social experiment","survival"],r:2.9,w:"50 strangers in a circle. Every 2 minutes one dies by group vote. Pure survival psychology with no escape.",sv:["Netflix"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+{id:12,t:"Would You Rather",y:2012,d:"David Guy Levy",ti:"t3",tg:["horror","survival game","sadism"],r:2.8,w:"Desperate guests forced into brutal choices at a rich man's dinner party. Escalating violence, moral compromise under duress.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg"},
+{id:13,t:"Fermat's Room",y:2007,d:"Luis Piedrahita, Rodrigo Sopena",ti:"t3",tg:["thriller","puzzle","shrinking room"],r:3.2,w:"Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival mechanism.",sv:[],av:["Amazon Prime","Tubi"],im:"https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg"},
+{id:14,t:"Level 16",y:2018,d:"Danishka Esterhazy",ti:"t3",tg:["dystopian","sci-fi horror","escape"],r:3.0,w:"Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg"},
+{id:15,t:"The Incident",y:2014,d:"Isaac Ezban",ti:"t3",tg:["sci-fi horror","infinite loop","existential"],r:3.1,w:"Two groups trapped in infinite loops. Time passes but space repeats. Existential claustrophobia. Mexican indie gem.",sv:[],av:["Amazon Prime","Tubi"],im:"https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+{id:16,t:"Pandorum",y:2009,d:"Christian Alvart",ti:"t4",tg:["sci-fi horror","space","amnesia"],r:3.2,w:"Crew wakes on a spaceship with no memory. Something hunts them in the dark. Claustrophobic corridors and psychological breakdown.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg",fb:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg"},
+{id:17,t:"The Void",y:2016,d:"Jeremy Gillespie, Steven Kostanski",ti:"t4",tg:["cosmic horror","siege","Lovecraftian"],r:3.0,w:"People trapped in a hospital surrounded by cultists. Cosmic horror seeps in. Practical effects and escalating dread.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+{id:18,t:"Breathing Room",y:2008,d:"John Suits, Gabriel Cowan",ti:"t4",tg:["thriller","survival game","puzzle"],r:2.4,w:"Strangers wake in a locked white room wearing explosive collars. Must figure out the rules or die. Ultra-low-budget tension.",sv:[],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg"},
+{id:19,t:"The Hole",y:2001,d:"Nick Hamm",ti:"t4",tg:["psychological thriller","bunker","teen horror"],r:2.9,w:"Four teens lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley.",sv:["Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg"},
+{id:20,t:"The Bunker",y:2024,d:"Adrian Langley",ti:"t4",tg:["post-apocalyptic","bunker","survival"],r:2.6,w:"Survivors in a bunker after nuclear event. Resources dwindle, tensions rise, paranoia sets in. Direct spiritual successor.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg",fb:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg"}
+];
+var TM={t1:{l:"Direct Matches",ds:"Closest in tone and intensity",n:"1",c:"ct1"},t2:{l:"Claustrophobic",ds:"Confined-space tension",n:"2",c:"ct2"},t3:{l:"Survival Pressure",ds:"High-concept survival",n:"3",c:"ct3"},t4:{l:"Adjacent Cuts",ds:"Shared DNA, different angle",n:"4",c:"ct4"}};
+var TO=["t1","t2","t3","t4"];
+var filt="all";
+
+function ce(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e}
+function tx(tag,cls,txt){var e=ce(tag,cls);e.textContent=txt;return e}
+function mI(src,alt,cls,fb){var i=ce("img",cls);i.src=src;i.alt=alt;i.loading="lazy";i.onerror=function(){i.onerror=null;i.src=fb};return i}
+function st(r){var s="";for(var i=0;i<Math.floor(r);i++)s+="\u2605";if(r%1>=.4)s+="\u00BD";return s+" "+r}
+function ab(p,sv,av){(sv||[]).forEach(function(s){p.appendChild(tx("span","sb",s))});(av||[]).forEach(function(s){p.appendChild(tx("span","sb f",s))})}
+function fm(m){if(filt==="all")return true;if(filt==="svod")return m.sv.length>0;return m.av.length>0}
+
+// HERO — "Now Playing"
+function bHero(){
+  var h=D.reduce(function(b,m){return m.r>b.r?m:b},D[0]);
+  var sec=ce("section","hero");
+  var card=ce("div","now-playing");
+  card.addEventListener("click",function(){oD(h.id)});
+  var lbl=ce("div","np-label");
+  lbl.appendChild(ce("div","np-dot"));
+  lbl.appendChild(tx("span","np-txt","Now Playing"));
+  card.appendChild(lbl);
+  var body=ce("div","np-body");
+  // Spinning disc
+  var dw=ce("div","disc-wrap");
+  var disc=ce("div","disc");
+  var dlbl=ce("div","disc-label");
+  dlbl.appendChild(mI(h.im,h.t,"",h.fb));
+  disc.appendChild(dlbl);
+  dw.appendChild(disc);
+  body.appendChild(dw);
+  // Info
+  var info=ce("div","np-info");
+  info.appendChild(tx("div","np-title",h.t));
+  var meta=ce("div","np-meta");
+  meta.appendChild(tx("span","np-rate",st(h.r)));
+  meta.appendChild(tx("span","",String(h.y)));
+  meta.appendChild(tx("span","",h.d));
+  info.appendChild(meta);
+  info.appendChild(tx("p","np-desc",h.w));
+  var bd=ce("div","np-badges");ab(bd,h.sv,h.av);info.appendChild(bd);
+  body.appendChild(info);
+  card.appendChild(body);
+  sec.appendChild(card);
+  return sec;
+}
+
+// Sleeve card (horizontal scroll)
+function bSleeve(m,dl){
+  var s=ce("div","sleeve");s.dataset.anim="";s.dataset.delay=String(dl);
+  s.addEventListener("click",function(){oD(m.id)});
+  var art=ce("div","sleeve-art");
+  art.appendChild(mI(m.im,m.t,"",m.fb));
+  // Vinyl peeking
+  var vin=ce("div","sleeve-vinyl");
+  art.appendChild(vin);
+  s.appendChild(art);
+  var bot=ce("div","sleeve-bot");
+  bot.appendChild(tx("div","sleeve-title",m.t));
+  var meta=ce("div","sleeve-meta");
+  meta.appendChild(tx("span","rt",st(m.r)));
+  meta.appendChild(tx("span","",String(m.y)));
+  bot.appendChild(meta);
+  s.appendChild(bot);
+  return s;
+}
+
+// Record row (vertical list)
+function bRecord(m,dl){
+  var r=ce("div","record");r.dataset.anim="";r.dataset.delay=String(dl);
+  r.addEventListener("click",function(){oD(m.id)});
+  var art=ce("div","rec-art");
+  art.appendChild(mI(m.im,m.t,"",m.fb));
+  r.appendChild(art);
+  var info=ce("div","rec-info");
+  info.appendChild(tx("div","rec-title",m.t));
+  var meta=ce("div","rec-meta");
+  meta.appendChild(tx("span","rt",st(m.r)));
+  meta.appendChild(tx("span","",String(m.y)));
+  meta.appendChild(tx("span","",m.d));
+  info.appendChild(meta);
+  var tags=ce("div","rec-tags");
+  m.tg.slice(0,3).forEach(function(g){tags.appendChild(tx("span","tag",g))});
+  info.appendChild(tags);
+  r.appendChild(info);
+  return r;
+}
+
+function bCrates(){
+  TO.forEach(function(tk,idx){
+    var ti=TM[tk];
+    var mv=D.filter(function(m){return m.ti===tk&&fm(m)});
+    if(!mv.length)return;
+    var sec=ce("section","crate");
+    var hdr=ce("div","crate-hdr "+ti.c);hdr.dataset.anim="";
+    hdr.appendChild(tx("div","crate-icon",ti.n));
+    var inf=ce("div","crate-info");
+    inf.appendChild(tx("h2","",ti.l));
+    inf.appendChild(tx("p","",ti.ds));
+    hdr.appendChild(inf);
+    sec.appendChild(hdr);
+
+    // First 3 tiers: horizontal crate scroll. Last tier: vertical list
+    if(idx<3){
+      var scroll=ce("div","crate-scroll");
+      mv.forEach(function(m,i){scroll.appendChild(bSleeve(m,i*100))});
+      sec.appendChild(scroll);
+    } else {
+      var list=ce("div","crate-list");
+      mv.forEach(function(m,i){list.appendChild(bRecord(m,i*80))});
+      sec.appendChild(list);
+    }
+    document.getElementById("main").appendChild(sec);
+  });
+  obs();
+}
+
+function render(){
+  var mn=document.getElementById("main");
+  // Keep nav, remove rest
+  var nav=mn.querySelector("nav");
+  while(mn.firstChild)mn.removeChild(mn.firstChild);
+  mn.appendChild(nav);
+  mn.appendChild(bHero());
+  bCrates();
+}
+
+// DETAIL
+function oD(id){
+  var m=D.find(function(x){return x.id===id});if(!m)return;
+  var ov=document.getElementById("dOv"),pan=document.getElementById("dPan"),ti=TM[m.ti];
+  while(pan.firstChild)pan.removeChild(pan.firstChild);
+  pan.appendChild(ce("div","dp-handle"));
+  var cl=ce("button","dp-close");cl.textContent="\u00D7";cl.addEventListener("click",cD);pan.appendChild(cl);
+
+  var hero=ce("div","dp-hero");
+  // Spinning disc
+  var dw=ce("div","dp-disc-w");
+  var disc=ce("div","dp-disc");
+  var dimg=ce("div","dp-disc-img");dimg.appendChild(mI(m.im,m.t,"",m.fb));
+  disc.appendChild(dimg);dw.appendChild(disc);hero.appendChild(dw);
+  // Sleeve
+  var slv=ce("div","dp-sleeve");slv.appendChild(mI(m.im,m.t,"",m.fb));
+  hero.appendChild(slv);
+  pan.appendChild(hero);
+
+  var body=ce("div","dp-body");
+  body.appendChild(tx("div","tp","Tier "+ti.n+" \u2014 "+ti.l));
+  body.appendChild(tx("h2","",m.t));
+  var meta=ce("div","dp-meta");
+  meta.appendChild(tx("span","rt",st(m.r)+"/5"));
+  meta.appendChild(tx("span","",String(m.y)));
+  meta.appendChild(tx("span","",m.d));
+  body.appendChild(meta);
+
+  body.appendChild(tx("div","dp-label","Liner Notes"));
+  body.appendChild(tx("p","dp-desc",m.w));
+
+  body.appendChild(tx("div","dp-label","Genre"));
+  var dtg=ce("div","dp-tags");m.tg.forEach(function(g){dtg.appendChild(tx("span","tag",g))});body.appendChild(dtg);
+
+  body.appendChild(tx("div","dp-label","Where to Listen"));
+  var ds=ce("div","dp-stream");
+  if(!m.sv.length&&!m.av.length){ds.appendChild(tx("span","","\u2014 Not currently available"));ds.style.color="var(--txt3)";ds.style.fontSize="13px"}
+  else ab(ds,m.sv,m.av);
+  body.appendChild(ds);
+  pan.appendChild(body);
+
+  requestAnimationFrame(function(){ov.classList.add("on");pan.classList.add("on");document.body.style.overflow="hidden"});
+}
+function cD(){document.getElementById("dOv").classList.remove("on");document.getElementById("dPan").classList.remove("on");document.body.style.overflow=""}
+document.getElementById("dOv").addEventListener("click",cD);
+
+// SEARCH
+var sOv=document.getElementById("sOv"),sIn=document.getElementById("sIn"),sRes=document.getElementById("sRes");
+document.getElementById("sBtn").addEventListener("click",function(){sOv.classList.add("on");setTimeout(function(){sIn.focus()},100)});
+document.getElementById("sCan").addEventListener("click",function(){sOv.classList.remove("on");sIn.value="";while(sRes.firstChild)sRes.removeChild(sRes.firstChild)});
+sIn.addEventListener("input",function(){
+  while(sRes.firstChild)sRes.removeChild(sRes.firstChild);
+  var q=sIn.value.toLowerCase().trim();if(!q)return;
+  var r=D.filter(function(m){return m.t.toLowerCase().indexOf(q)!==-1||m.d.toLowerCase().indexOf(q)!==-1||m.tg.some(function(g){return g.indexOf(q)!==-1})});
+  if(!r.length){var np=tx("p","","No records found");np.style.cssText="color:var(--txt3);text-align:center;padding:40px 0";sRes.appendChild(np);return}
+  r.forEach(function(m){var rec=bRecord(m,0);rec.classList.add("v");rec.style.marginBottom="8px";rec.onclick=function(){sOv.classList.remove("on");sIn.value="";while(sRes.firstChild)sRes.removeChild(sRes.firstChild);oD(m.id)};sRes.appendChild(rec)});
+});
+
+// FILTER
+document.querySelectorAll(".fbi").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".fbi").forEach(function(x){x.classList.remove("on")});
+    b.classList.add("on");filt=b.dataset.f;
+    var old=document.querySelectorAll(".crate");old.forEach(function(s){s.parentNode.removeChild(s)});
+    bCrates();
+  });
+});
+
+// OBSERVER
+var ob;
+function obs(){
+  if(ob)ob.disconnect();
+  ob=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){var dl=parseInt(e.target.dataset.delay)||0;setTimeout(function(){e.target.classList.add("v")},dl);ob.unobserve(e.target)}
+  })},{threshold:.1,rootMargin:"0px 0px -30px 0px"});
+  document.querySelectorAll("[data-anim]:not(.v)").forEach(function(el){ob.observe(el)});
+}
+
+// NAV SCROLL
+var nv=document.getElementById("nv");
+window.addEventListener("scroll",function(){nv.classList.toggle("sc",window.scrollY>20)},{passive:true});
+
+// SWIPE CLOSE
+var tsY=0,dP=document.getElementById("dPan");
+dP.addEventListener("touchstart",function(e){tsY=e.touches[0].clientY},{passive:true});
+dP.addEventListener("touchmove",function(e){if(e.touches[0].clientY-tsY>80&&dP.scrollTop<=0)cD()},{passive:true});
+
+render();
+})();
+</script>
+</body>
+</html>
