@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CineVault</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#1B2D2A;--cream:#F5EDE3;--rose:#D4A0A0;--sage:#8FAE89;
+--txt:rgba(250,247,242,.95);--txt2:rgba(250,247,242,.65);--txt3:rgba(250,247,242,.4);
+--gl:rgba(245,237,227,.08);--gl2:rgba(245,237,227,.13);
+--bd:rgba(245,237,227,.14);--bd2:rgba(245,237,227,.24);
+--gold:#E8C476;
+}
+html{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;position:relative;background:linear-gradient(165deg,#1B2D2A,#2A3F3A 30%,#1E3330 60%,#1B2D2A)}
+::-webkit-scrollbar{width:0}
+
+.bgf{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;height:100vh;z-index:0;overflow:hidden;will-change:transform}
+.bgg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(212,160,160,.15),transparent 60%),radial-gradient(ellipse 70% 50% at 80% 30%,rgba(143,174,137,.12),transparent 55%),radial-gradient(ellipse 90% 70% at 50% 80%,rgba(196,145,145,.1),transparent 50%),linear-gradient(165deg,#1B2D2A,#243B36 35%,#1E3330 65%,#1B2D2A)}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;animation:oF 22s ease-in-out infinite}
+.o1{width:200px;height:200px;background:rgba(212,160,160,.25);top:10%;left:-20%;animation-duration:25s}
+.o2{width:160px;height:160px;background:rgba(143,174,137,.2);top:40%;right:-15%;animation-delay:-7s}
+.o3{width:180px;height:180px;background:rgba(196,145,145,.18);bottom:15%;left:10%;animation-delay:-14s;animation-duration:28s}
+@keyframes oF{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.1)}50%{transform:translate(-10px,25px) scale(.95)}75%{transform:translate(20px,10px) scale(1.05)}}
+.pts{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;height:100vh;z-index:1;pointer-events:none;overflow:hidden}
+.pt{position:absolute;width:3px;height:3px;background:rgba(245,237,227,.18);border-radius:50%;animation:pD linear infinite}
+@keyframes pD{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(40px);opacity:0}}
+
+.cnt{position:relative;z-index:2;padding-bottom:100px}
+nav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;z-index:100;padding:52px 20px 14px;background:rgba(27,45,42,.6);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transition:background .3s}
+nav.sc{background:rgba(27,45,42,.85)}
+.ni{display:flex;align-items:center;justify-content:space-between}
+.nb{display:flex;align-items:center;gap:8px}
+.nl{width:28px;height:28px;background:linear-gradient(135deg,var(--rose),#C49191);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nt{font-size:18px;font-weight:600;letter-spacing:-.3px;color:var(--cream)}
+.na{display:flex;gap:8px}
+.bn{width:36px;height:36px;border-radius:10px;border:1px solid var(--bd);background:var(--gl);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt2);transition:all .2s}
+.bn:active{transform:scale(.92);background:var(--gl2)}
+
+.hero{padding:108px 16px 24px}
+.hc{position:relative;border-radius:24px;overflow:hidden;background:var(--gl);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--bd);cursor:pointer;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
+.hc:active{transform:scale(.985)}
+.hiw{position:relative;width:100%;height:280px;overflow:hidden}
+.hiw img{width:100%;height:100%;object-fit:cover;display:block}
+.hio{position:absolute;inset:0;background:linear-gradient(to top,rgba(27,45,42,.95),rgba(27,45,42,.3) 50%,transparent)}
+.hb{padding:0 20px 20px;margin-top:-60px;position:relative;z-index:2}
+.tp{display:inline-block;padding:4px 10px;background:rgba(212,160,160,.2);border:1px solid rgba(212,160,160,.3);border-radius:20px;font-size:11px;font-weight:500;color:var(--rose);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.hb h1{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1.15;margin-bottom:4px;color:var(--cream)}
+.hm{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--txt2);margin-bottom:10px}
+.rt{color:var(--gold);font-weight:600}
+.hd{font-size:13px;line-height:1.55;color:var(--txt2);font-weight:300;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bds{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.sb{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:500;background:rgba(143,174,137,.15);border:1px solid rgba(143,174,137,.25);color:rgba(178,210,172,.9)}
+.sb.f{background:rgba(245,237,227,.08);border-color:rgba(245,237,227,.15);color:var(--txt2)}
+
+.ts{padding:0 16px;margin-top:32px}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px 16px;background:var(--gl);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:16px;opacity:0;transform:translateY(20px);transition:all .6s cubic-bezier(.25,.46,.45,.94)}
+.th.v{opacity:1;transform:translateY(0)}
+.tn{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.c1 .tn{background:rgba(212,160,160,.2);color:var(--rose);border:1px solid rgba(212,160,160,.3)}
+.c2 .tn{background:rgba(143,174,137,.2);color:#B2D2AC;border:1px solid rgba(143,174,137,.3)}
+.c3 .tn{background:rgba(232,196,118,.15);color:var(--gold);border:1px solid rgba(232,196,118,.25)}
+.c4 .tn{background:rgba(245,237,227,.1);color:var(--cream);border:1px solid rgba(245,237,227,.2)}
+.thi h2{font-size:15px;font-weight:600;letter-spacing:-.2px;line-height:1.2}
+.thi p{font-size:12px;color:var(--txt3);font-weight:300;margin-top:2px}
+
+.mg{display:flex;flex-direction:column;gap:12px}
+.mt{display:flex;gap:14px;padding:12px;background:var(--gl);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:16px;cursor:pointer;transition:all .35s cubic-bezier(.25,.46,.45,.94);opacity:0;transform:translateY(24px)}
+.mt.v{opacity:1;transform:translateY(0)}
+.mt:active{transform:scale(1.02) translateY(-2px);background:var(--gl2);border-color:var(--bd2);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.pw{width:85px;height:128px;flex-shrink:0;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.pw img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.mt:active .pw img{transform:scale(1.05)}
+.mi{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:4px 0}
+.mi-t{font-size:15px;font-weight:600;letter-spacing:-.2px;line-height:1.25;margin-bottom:4px;color:var(--cream)}
+.mi-m{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt3);margin-bottom:6px}
+.tg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{font-size:10px;padding:2px 7px;background:rgba(245,237,227,.06);border:1px solid rgba(245,237,227,.1);border-radius:6px;color:var(--txt3)}
+.mi .sb{font-size:10px;padding:2px 8px}
+
+.dov{position:fixed;inset:0;z-index:200;background:rgba(27,45,42,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .35s}
+.dov.on{opacity:1;pointer-events:all}
+.dp{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:430px;max-height:85vh;z-index:201;background:rgba(36,59,54,.85);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid var(--bd);border-bottom:none;border-radius:24px 24px 0 0;transition:transform .45s cubic-bezier(.32,.72,0,1);overflow-y:auto;overscroll-behavior:contain}
+.dp.on{transform:translateX(-50%) translateY(0)}
+.dh{width:36px;height:4px;background:rgba(245,237,227,.2);border-radius:2px;margin:12px auto 0}
+.dia{position:relative;width:100%;height:300px;overflow:hidden}
+.dia img{width:100%;height:100%;object-fit:cover}
+.dig{position:absolute;inset:0;background:linear-gradient(to top,rgba(36,59,54,1),rgba(36,59,54,.4) 50%,transparent)}
+.dbd{padding:0 20px 40px;margin-top:-50px;position:relative;z-index:2}
+.dbd h2{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.15;margin-bottom:6px;color:var(--cream)}
+.dm{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--txt2);margin-bottom:16px}
+.dl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-bottom:8px;margin-top:20px}
+.dd{font-size:14px;line-height:1.65;color:var(--txt2);font-weight:300}
+.dtg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.dtg .tag{font-size:11px;padding:4px 10px}
+.dst{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.dst .sb{font-size:12px;padding:6px 12px}
+.dcl{position:absolute;top:20px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(27,45,42,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt);font-size:20px;z-index:3;line-height:1}
+.dcl:active{transform:scale(.9)}
+
+.fab{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);width:430px;z-index:50;display:flex;justify-content:center;pointer-events:none}
+.fbar{display:flex;gap:8px;padding:8px;background:rgba(27,45,42,.7);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid var(--bd);border-radius:20px;pointer-events:all;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.fb{display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:14px;border:1px solid transparent;background:transparent;color:var(--txt2);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
+.fb:active{transform:scale(.94)}
+.fb.on{background:rgba(212,160,160,.2);color:var(--cream);border-color:rgba(212,160,160,.3)}
+
+.sov{position:fixed;inset:0;z-index:150;background:rgba(27,45,42,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .3s;padding:60px 20px 20px}
+.sov.on{opacity:1;pointer-events:all}
+.sba{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--gl);border:1px solid var(--bd);border-radius:16px;margin-bottom:16px}
+.sba input{flex:1;background:transparent;border:none;outline:none;color:var(--cream);font-family:inherit;font-size:16px}
+.sba input::placeholder{color:var(--txt3)}
+.sca{background:none;border:none;color:var(--rose);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.sr{max-height:calc(100vh - 140px);overflow-y:auto}
+.sr .mt{opacity:1;transform:none;margin-bottom:8px}
+
+@media(hover:hover){
+.mt:hover{transform:scale(1.02) translateY(-2px);background:var(--gl2);border-color:var(--bd2);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.mt:hover .pw img{transform:scale(1.05)}
+.bn:hover{background:var(--gl2);border-color:var(--bd2)}
+.fb:hover{background:rgba(245,237,227,.08);color:var(--cream)}
+}
+</style>
+</head>
+<body>
+
+<div class="bgf" id="pBg"><div class="bgg"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="pts" id="pts"></div>
+
+<nav id="nv">
+  <div class="ni">
+    <div class="nb">
+      <div class="nl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAF7F2" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+      <span class="nt">CineVault</span>
+    </div>
+    <div class="na">
+      <button class="bn" id="sBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button class="bn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<main class="cnt" id="main"></main>
+<div class="dov" id="dOv"></div>
+<div class="dp" id="dPan"></div>
+
+<div class="sov" id="sOv">
+  <div class="sba">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(250,247,242,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="sIn" placeholder="Search movies..." autocomplete="off">
+    <button class="sca" id="sCan">Cancel</button>
+  </div>
+  <div class="sr" id="sRes"></div>
+</div>
+
+<div class="fab"><div class="fbar">
+  <button class="fb on" data-f="all"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> All</button>
+  <button class="fb" data-f="svod"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Streaming</button>
+  <button class="fb" data-f="free"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Free</button>
+</div></div>
+
+<script>
+(function(){
+"use strict";
+var D=[
+{id:1,t:"Right at Your Door",y:2006,d:"Chris Gorak",ti:"t1",tg:["post-apocalyptic","thriller","domestic horror"],r:3.1,w:"Dirty bomb hits LA; husband seals himself inside while wife is outside. Paranoia escalates in a sealed space with dwindling trust.",sv:[],av:["Tubi","Pluto TV"],im:"https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg"},
+{id:2,t:"Hidden",y:2015,d:"Matt & Ross Duffer",ti:"t1",tg:["post-apocalyptic","survival","bunker"],r:3.1,w:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg"},
+{id:3,t:"Carriers",y:2009,d:"Alex & David Pastor",ti:"t1",tg:["pandemic","road movie","survival"],r:2.8,w:"Four survivors navigate a pandemic wasteland with strict rules. Moral decay under survival pressure. Stars Chris Pine pre-Star Trek.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg"},
+{id:4,t:"It Comes at Night",y:2017,d:"Trey Edward Shults",ti:"t1",tg:["psychological horror","paranoia","isolation"],r:3.1,w:"Family boarded up during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+{id:5,t:"Await Further Instructions",y:2018,d:"Johnny Kevorkian",ti:"t1",tg:["sci-fi horror","isolation","lockdown"],r:2.5,w:"Family trapped on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions. Sealed-in paranoia.",sv:["Netflix","Shudder"],av:[],im:"https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg",fb:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg"},
+{id:6,t:"Coherence",y:2013,d:"James Ward Byrkit",ti:"t2",tg:["sci-fi","psychological thriller","quantum"],r:3.7,w:"Dinner party goes wrong when a comet passes overhead. Reality fractures. Improvised dialogue. Pure confined-space paranoia.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg"},
+{id:7,t:"Pontypool",y:2008,d:"Bruce McDonald",ti:"t2",tg:["horror","language virus","siege"],r:3.3,w:"Radio DJ trapped as a virus spreads through the English language. Almost entirely one location. Cerebral claustrophobia.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg",fb:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg"},
+{id:8,t:"The Platform",y:2019,d:"Galder Gaztelu-Urrutia",ti:"t2",tg:["sci-fi horror","social allegory","survival"],r:3.4,w:"Vertical prison where food descends level by level. Upper floors feast; lower floors starve. Brutal social allegory.",sv:["Netflix"],av:[],im:"https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg"},
+{id:9,t:"Exam",y:2009,d:"Stuart Hazeldine",ti:"t2",tg:["psychological thriller","single-room","puzzle"],r:3.3,w:"Eight candidates in a single room for a final interview. One question, 80 minutes, strict rules. Dynamics fracture under pressure.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg"},
+{id:10,t:"The Bar",y:2017,d:"Alex de la Iglesia",ti:"t2",tg:["thriller","dark comedy","siege"],r:3.0,w:"Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other.",sv:["Netflix","Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg",fb:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg"},
+{id:11,t:"Circle",y:2015,d:"Aaron Hann, Mario Miscione",ti:"t3",tg:["sci-fi","social experiment","survival"],r:2.9,w:"50 strangers in a circle. Every 2 minutes one dies by group vote. Pure survival psychology with no escape.",sv:["Netflix"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+{id:12,t:"Would You Rather",y:2012,d:"David Guy Levy",ti:"t3",tg:["horror","survival game","sadism"],r:2.8,w:"Desperate guests forced into brutal choices at a rich man's dinner party. Escalating violence, moral compromise under duress.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg"},
+{id:13,t:"Fermat's Room",y:2007,d:"Luis Piedrahita, Rodrigo Sopena",ti:"t3",tg:["thriller","puzzle","shrinking room"],r:3.2,w:"Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival mechanism.",sv:[],av:["Amazon Prime","Tubi"],im:"https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg"},
+{id:14,t:"Level 16",y:2018,d:"Danishka Esterhazy",ti:"t3",tg:["dystopian","sci-fi horror","escape"],r:3.0,w:"Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg"},
+{id:15,t:"The Incident",y:2014,d:"Isaac Ezban",ti:"t3",tg:["sci-fi horror","infinite loop","existential"],r:3.1,w:"Two groups trapped in infinite loops. Time passes but space repeats. Existential claustrophobia. Mexican indie gem.",sv:[],av:["Amazon Prime","Tubi"],im:"https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+{id:16,t:"Pandorum",y:2009,d:"Christian Alvart",ti:"t4",tg:["sci-fi horror","space","amnesia"],r:3.2,w:"Crew wakes on a spaceship with no memory. Something hunts them in the dark. Claustrophobic corridors and psychological breakdown.",sv:["Amazon Prime"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg",fb:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg"},
+{id:17,t:"The Void",y:2016,d:"Jeremy Gillespie, Steven Kostanski",ti:"t4",tg:["cosmic horror","siege","Lovecraftian"],r:3.0,w:"People trapped in a hospital surrounded by cultists. Cosmic horror seeps in. Practical effects and escalating dread.",sv:["Shudder"],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+{id:18,t:"Breathing Room",y:2008,d:"John Suits, Gabriel Cowan",ti:"t4",tg:["thriller","survival game","puzzle"],r:2.4,w:"Strangers wake in a locked white room wearing explosive collars. Must figure out the rules or die. Ultra-low-budget tension.",sv:[],av:["Tubi"],im:"https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg"},
+{id:19,t:"The Hole",y:2001,d:"Nick Hamm",ti:"t4",tg:["psychological thriller","bunker","teen horror"],r:2.9,w:"Four teens lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley.",sv:["Amazon Prime"],av:[],im:"https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg",fb:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg"},
+{id:20,t:"The Bunker",y:2024,d:"Adrian Langley",ti:"t4",tg:["post-apocalyptic","bunker","survival"],r:2.6,w:"Survivors in a bunker after nuclear event. Resources dwindle, tensions rise, paranoia sets in. Direct spiritual successor.",sv:[],av:["Tubi","Amazon Prime"],im:"https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg",fb:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg"}
+];
+var TM={t1:{l:"Direct Matches",ds:"Closest in tone and intensity",n:"1",c:"c1"},t2:{l:"Claustrophobic",ds:"Confined-space psychological tension",n:"2",c:"c2"},t3:{l:"Survival Pressure",ds:"High-concept survival scenarios",n:"3",c:"c3"},t4:{l:"Adjacent Deep Cuts",ds:"Shares DNA but diverges in subgenre",n:"4",c:"c4"}};
+var TO=["t1","t2","t3","t4"];
+
+function ce(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e}
+function tx(tag,cls,txt){var e=ce(tag,cls);e.textContent=txt;return e}
+function mI(src,alt,cls,fb){var i=ce("img",cls);i.src=src;i.alt=alt;i.loading="lazy";i.onerror=function(){i.onerror=null;i.src=fb};return i}
+function st(r){var s="";for(var i=0;i<Math.floor(r);i++)s+="\u2605";if(r%1>=.4)s+="\u00BD";return s+" "+r}
+function ab(p,sv,av){(sv||[]).forEach(function(s){p.appendChild(tx("span","sb",s))});(av||[]).forEach(function(s){p.appendChild(tx("span","sb f",s))})}
+
+var filt="all";
+function fm(m){if(filt==="all")return true;if(filt==="svod")return m.sv.length>0;return m.av.length>0}
+
+function bHero(){
+  var h=D.reduce(function(b,m){return m.r>b.r?m:b},D[0]);
+  var s=ce("section","hero");
+  var c=ce("div","hc");
+  c.addEventListener("click",function(){oD(h.id)});
+  var iw=ce("div","hiw");
+  iw.appendChild(mI(h.im,h.t,"",h.fb));
+  iw.appendChild(ce("div","hio"));
+  c.appendChild(iw);
+  var b=ce("div","hb");
+  b.appendChild(tx("div","tp","Top Pick"));
+  b.appendChild(tx("h1","",h.t));
+  var m=ce("div","hm");
+  m.appendChild(tx("span","rt",st(h.r)+"/5"));
+  m.appendChild(tx("span","",String(h.y)));
+  m.appendChild(tx("span","",h.d));
+  b.appendChild(m);
+  b.appendChild(tx("p","hd",h.w));
+  var bd=ce("div","bds");ab(bd,h.sv,h.av);b.appendChild(bd);
+  c.appendChild(b);s.appendChild(c);return s;
+}
+
+function bTile(m,dl){
+  var t=ce("div","mt");t.dataset.anim="";t.dataset.delay=String(dl);
+  t.addEventListener("click",function(){oD(m.id)});
+  var pw=ce("div","pw");pw.appendChild(mI(m.im,m.t,"",m.fb));t.appendChild(pw);
+  var i=ce("div","mi");
+  i.appendChild(tx("div","mi-t",m.t));
+  var me=ce("div","mi-m");me.appendChild(tx("span","rt",st(m.r)));me.appendChild(tx("span","",String(m.y)));i.appendChild(me);
+  var tg=ce("div","tg");m.tg.slice(0,3).forEach(function(g){tg.appendChild(tx("span","tag",g))});i.appendChild(tg);
+  var bd=ce("div","bds");ab(bd,m.sv,m.av);i.appendChild(bd);
+  t.appendChild(i);return t;
+}
+
+function bTiers(){
+  TO.forEach(function(tk){
+    var ti=TM[tk];
+    var mv=D.filter(function(m){return m.ti===tk&&fm(m)});
+    if(!mv.length)return;
+    var s=ce("section","ts");
+    var h=ce("div","th "+ti.c);h.dataset.anim="";
+    h.appendChild(tx("div","tn",ti.n));
+    var inf=ce("div","thi");inf.appendChild(tx("h2","",ti.l));inf.appendChild(tx("p","",ti.ds));
+    h.appendChild(inf);s.appendChild(h);
+    var g=ce("div","mg");mv.forEach(function(m,i){g.appendChild(bTile(m,i*80))});
+    s.appendChild(g);document.getElementById("main").appendChild(s);
+  });
+  obs();
+}
+
+function render(){
+  var mn=document.getElementById("main");
+  while(mn.firstChild)mn.removeChild(mn.firstChild);
+  mn.appendChild(bHero());bTiers();
+}
+
+function oD(id){
+  var m=D.find(function(x){return x.id===id});if(!m)return;
+  var ov=document.getElementById("dOv"),pan=document.getElementById("dPan"),ti=TM[m.ti];
+  while(pan.firstChild)pan.removeChild(pan.firstChild);
+  pan.appendChild(ce("div","dh"));
+  var cl=ce("button","dcl");cl.textContent="\u00D7";cl.addEventListener("click",cD);pan.appendChild(cl);
+  var ia=ce("div","dia");ia.appendChild(mI(m.im,m.t,"",m.fb));ia.appendChild(ce("div","dig"));pan.appendChild(ia);
+  var b=ce("div","dbd");
+  b.appendChild(tx("div","tp","Tier "+ti.n+" \u2014 "+ti.l));
+  b.appendChild(tx("h2","",m.t));
+  var me=ce("div","dm");me.appendChild(tx("span","rt",st(m.r)+"/5"));me.appendChild(tx("span","",String(m.y)));me.appendChild(tx("span","",m.d));b.appendChild(me);
+  b.appendChild(tx("div","dl","Why you'll like it"));b.appendChild(tx("p","dd",m.w));
+  b.appendChild(tx("div","dl","Genre"));
+  var dtg=ce("div","dtg");m.tg.forEach(function(g){dtg.appendChild(tx("span","tag",g))});b.appendChild(dtg);
+  b.appendChild(tx("div","dl","Where to watch"));
+  var ds=ce("div","dst");
+  if(!m.sv.length&&!m.av.length){var ns=tx("span","","\u2014 Not currently streaming");ns.style.color="var(--txt3)";ns.style.fontSize="13px";ds.appendChild(ns)}
+  else ab(ds,m.sv,m.av);
+  b.appendChild(ds);pan.appendChild(b);
+  requestAnimationFrame(function(){ov.classList.add("on");pan.classList.add("on");document.body.style.overflow="hidden"});
+}
+
+function cD(){document.getElementById("dOv").classList.remove("on");document.getElementById("dPan").classList.remove("on");document.body.style.overflow=""}
+document.getElementById("dOv").addEventListener("click",cD);
+
+// Search
+var sOv=document.getElementById("sOv"),sIn=document.getElementById("sIn"),sRes=document.getElementById("sRes");
+document.getElementById("sBtn").addEventListener("click",function(){sOv.classList.add("on");setTimeout(function(){sIn.focus()},100)});
+document.getElementById("sCan").addEventListener("click",function(){sOv.classList.remove("on");sIn.value="";while(sRes.firstChild)sRes.removeChild(sRes.firstChild)});
+sIn.addEventListener("input",function(){
+  while(sRes.firstChild)sRes.removeChild(sRes.firstChild);
+  var q=sIn.value.toLowerCase().trim();if(!q)return;
+  var r=D.filter(function(m){return m.t.toLowerCase().indexOf(q)!==-1||m.d.toLowerCase().indexOf(q)!==-1||m.tg.some(function(g){return g.indexOf(q)!==-1})});
+  if(!r.length){var np=tx("p","","No movies found");np.style.cssText="color:var(--txt3);text-align:center;padding:40px 0";sRes.appendChild(np);return}
+  r.forEach(function(m){var tile=bTile(m,0);tile.classList.add("v");tile.style.marginBottom="8px";tile.onclick=function(){sOv.classList.remove("on");sIn.value="";while(sRes.firstChild)sRes.removeChild(sRes.firstChild);oD(m.id)};sRes.appendChild(tile)});
+});
+
+// Filter
+document.querySelectorAll(".fb").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".fb").forEach(function(x){x.classList.remove("on")});
+    b.classList.add("on");filt=b.dataset.f;
+    var old=document.querySelectorAll(".ts");old.forEach(function(s){s.parentNode.removeChild(s)});
+    bTiers();
+  });
+});
+
+// Observer
+var ob;
+function obs(){
+  if(ob)ob.disconnect();
+  ob=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){var dl=parseInt(e.target.dataset.delay)||0;setTimeout(function(){e.target.classList.add("v")},dl);ob.unobserve(e.target)}
+  })},{threshold:.1,rootMargin:"0px 0px -40px 0px"});
+  document.querySelectorAll("[data-anim]:not(.v)").forEach(function(el){ob.observe(el)});
+}
+
+// Parallax + nav
+var pBg=document.getElementById("pBg"),nv=document.getElementById("nv");
+window.addEventListener("scroll",function(){var s=window.scrollY;pBg.style.transform="translateX(-50%) translateY("+(s*-.3)+"px)";nv.classList.toggle("sc",s>20)},{passive:true});
+
+// Particles
+(function(){var c=document.getElementById("pts");for(var i=0;i<15;i++){var p=ce("div","pt");p.style.left=(Math.random()*100)+"%";p.style.animationDuration=(12+Math.random()*20)+"s";p.style.animationDelay=(-Math.random()*20)+"s";var sz=(2+Math.random()*2)+"px";p.style.width=sz;p.style.height=sz;p.style.opacity=String(.1+Math.random()*.2);c.appendChild(p)}})();
+
+// Swipe close detail
+var tsY=0,dP=document.getElementById("dPan");
+dP.addEventListener("touchstart",function(e){tsY=e.touches[0].clientY},{passive:true});
+dP.addEventListener("touchmove",function(e){if(e.touches[0].clientY-tsY>80&&dP.scrollTop<=0)cD()},{passive:true});
+
+render();
+})();
+</script>
+</body>
+</html>
