@@ -6,31 +6,29 @@
 <title>REWIND // VHS Film Vault</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --phosphor: #33ff66;
+  --phosphor: #33FF33;
   --phosphor-dim: #1a9940;
-  --phosphor-glow: rgba(51,255,102,0.15);
+  --phosphor-glow: rgba(51,255,51,0.2);
+  --amber: #FFB347;
+  --amber-dim: #cc8a2e;
   --warm-white: #e8dcc8;
   --warm-cream: #d4c5a9;
-  --crt-bg: #0a0a0a;
-  --crt-dark: #111;
-  --vhs-blue: #3344cc;
-  --vhs-red: #dd2244;
-  --tape-yellow: #ccaa33;
+  --crt-bg: #1A1A1A;
+  --crt-darker: #111;
   --pixel: 'Press Start 2P', monospace;
   --vt: 'VT323', monospace;
-  --hand: 'Caveat', cursive;
 }
 
 html { font-size: 16px; }
 
 body {
   font-family: var(--vt);
-  background: var(--crt-bg);
+  background: #000;
   color: var(--warm-white);
   max-width: 430px;
   margin: 0 auto;
@@ -39,8 +37,17 @@ body {
   line-height: 1.4;
 }
 
-/* === CRT SCANLINES OVERLAY === */
-body::before {
+/* === CRT SCREEN CONTAINER === */
+.crt-screen {
+  background: var(--crt-bg);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* === PERSISTENT SCANLINES === */
+.crt-screen::before {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -48,60 +55,196 @@ body::before {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0,0,0,0.15) 2px,
-    rgba(0,0,0,0.15) 4px
+    rgba(0,0,0,0.12) 2px,
+    rgba(0,0,0,0.12) 4px
   );
   pointer-events: none;
   z-index: 9999;
+  animation: scanline-roll 8s linear infinite;
 }
 
-/* === CRT VIGNETTE === */
-body::after {
+@keyframes scanline-roll {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 200px; }
+}
+
+/* === CRT VIGNETTE + CURVATURE === */
+.crt-screen::after {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
   pointer-events: none;
   z-index: 9998;
+  border-radius: 14px;
 }
 
-::selection {
-  background: var(--phosphor);
-  color: var(--crt-bg);
+/* === PERSISTENT STATIC NOISE === */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9997;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: noise-shift 0.15s steps(5) infinite;
+}
+
+@keyframes noise-shift {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-1px,2px); }
+  40% { transform: translate(2px,-1px); }
+  60% { transform: translate(-2px,1px); }
+  80% { transform: translate(1px,-2px); }
+  100% { transform: translate(0,0); }
+}
+
+::selection { background: var(--phosphor); color: var(--crt-bg); }
+
+/* === BOOT SCREEN === */
+.boot-screen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #000;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--vt);
+  transition: opacity 0.3s ease;
+}
+
+.boot-screen.off {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-text {
+  color: var(--phosphor);
+  font-size: 18px;
+  text-shadow: 0 0 8px var(--phosphor-glow);
+  text-align: left;
+  width: 300px;
+  line-height: 1.6;
+}
+
+.boot-text .line {
+  opacity: 0;
+  transform: translateY(2px);
+}
+
+.boot-text .line.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.boot-flicker {
+  animation: boot-flash 0.12s steps(2) 3;
+}
+
+@keyframes boot-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* === VHS TRACKING BAR === */
 .tracking-bar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   height: 0;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
   z-index: 10000;
   pointer-events: none;
   opacity: 0;
 }
 
 .tracking-bar.active {
-  animation: vhs-tracking 0.4s steps(8) forwards;
+  animation: vhs-tracking 0.5s steps(10) forwards;
 }
 
 @keyframes vhs-tracking {
-  0% { top: 0; height: 12px; opacity: 1; }
-  30% { height: 20px; }
-  50% { top: 30%; height: 8px; opacity: 0.8; }
-  70% { top: 60%; height: 15px; }
+  0% { top: 0; height: 14px; opacity: 1; }
+  25% { height: 22px; }
+  50% { top: 35%; height: 8px; opacity: 0.7; }
+  75% { top: 65%; height: 16px; }
   100% { top: 100%; height: 0; opacity: 0; }
 }
 
-/* === HEADER — VHS LABEL === */
+/* === VHS STATUS BAR (sticky) === */
+.vhs-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--crt-darker);
+  border-bottom: 1px solid var(--phosphor-dim);
+  padding: 5px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--vt);
+  font-size: 18px;
+}
+
+.vhs-bar .play-status {
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor-glow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vhs-bar .play-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 8px solid var(--phosphor);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  filter: drop-shadow(0 0 4px var(--phosphor-glow));
+}
+
+.vhs-bar .counter {
+  font-family: var(--pixel);
+  font-size: 9px;
+  color: var(--amber);
+  letter-spacing: 0.12em;
+}
+
+.vhs-bar .tracking-status {
+  font-size: 14px;
+  color: var(--warm-cream);
+  opacity: 0.4;
+}
+
+.rec-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: #dd2244;
+}
+
+.rec-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #dd2244;
+  animation: rec-blink 1s steps(1) infinite;
+}
+
+@keyframes rec-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* === HEADER === */
 .header {
-  background: linear-gradient(180deg, #1a1a2e 0%, var(--crt-bg) 100%);
-  padding: 20px 16px 16px;
+  background: linear-gradient(180deg, #1e1e2a 0%, var(--crt-bg) 100%);
+  padding: 24px 14px 16px;
   border-bottom: 2px solid var(--phosphor-dim);
   position: relative;
-  overflow: hidden;
 }
 
 .header::before {
@@ -109,13 +252,14 @@ body::after {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--vhs-blue), var(--vhs-red), var(--tape-yellow), var(--vhs-blue));
-  animation: rainbow-shift 3s linear infinite;
+  background: linear-gradient(90deg, var(--phosphor-dim), var(--amber-dim), var(--phosphor-dim));
+  background-size: 200% 100%;
+  animation: bar-shift 4s linear infinite;
 }
 
-@keyframes rainbow-shift {
+@keyframes bar-shift {
   0% { background-position: 0 0; }
-  100% { background-position: 430px 0; }
+  100% { background-position: 200% 0; }
 }
 
 .header-top {
@@ -126,45 +270,20 @@ body::after {
 
 .header-logo {
   font-family: var(--pixel);
-  font-size: 24px;
+  font-size: 22px;
   color: var(--phosphor);
-  text-shadow: 0 0 10px var(--phosphor-glow), 0 0 20px var(--phosphor-glow), 2px 2px 0 rgba(51,255,102,0.3);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  text-shadow: 0 0 12px var(--phosphor-glow), 0 0 24px var(--phosphor-glow), 2px 2px 0 rgba(51,255,51,0.2);
+  line-height: 1.3;
 }
 
 .header-logo .sub {
   display: block;
   font-family: var(--vt);
-  font-size: 18px;
+  font-size: 20px;
   color: var(--warm-white);
   text-shadow: none;
-  margin-top: 4px;
-  letter-spacing: 0.1em;
-}
-
-.rec-badge {
-  font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--vhs-red);
-  border: 2px solid var(--vhs-red);
-  padding: 4px 8px;
-  animation: rec-blink 1s steps(1) infinite;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.rec-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--vhs-red);
-}
-
-@keyframes rec-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  margin-top: 6px;
+  letter-spacing: 0.12em;
 }
 
 .header-info {
@@ -178,77 +297,58 @@ body::after {
   padding-top: 8px;
 }
 
-/* === TAPE COUNTER === */
-.tape-counter {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--crt-dark);
+.header-info .amber { color: var(--amber); }
+
+/* === NAV === */
+.nav-index {
+  padding: 10px 14px;
   border-bottom: 1px solid var(--phosphor-dim);
-  padding: 6px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: rgba(51,255,51,0.02);
+}
+
+.nav-index a {
+  display: block;
   font-family: var(--vt);
   font-size: 18px;
-  color: var(--phosphor);
-  text-shadow: 0 0 6px var(--phosphor-glow);
-}
-
-.tape-counter .counter-num {
-  font-family: var(--pixel);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-}
-
-.tape-counter .tracking-label {
-  font-size: 14px;
   color: var(--warm-cream);
-  opacity: 0.6;
+  text-decoration: none;
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(51,255,51,0.1);
+  transition: color 0.15s ease, padding-left 0.15s ease;
 }
 
-/* === TIER SECTION === */
+.nav-index a:last-child { border-bottom: none; }
+
+.nav-index a:hover {
+  color: var(--phosphor);
+  padding-left: 10px;
+  text-shadow: 0 0 8px var(--phosphor-glow);
+}
+
+.nav-index .ch-num {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--phosphor);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* === TIER === */
 .tier {
   border-bottom: 2px solid var(--phosphor-dim);
+  position: relative;
 }
 
 .tier-header {
-  padding: 16px;
+  padding: 16px 14px;
   position: relative;
-  background: linear-gradient(90deg, rgba(51,255,102,0.05) 0%, transparent 100%);
-  border-bottom: 1px dashed rgba(51,255,102,0.2);
-  cursor: default;
-}
-
-.tier-header::after {
-  content: '';
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 20px;
-  border: 2px solid var(--phosphor-dim);
-  border-radius: 10px;
-  opacity: 0.3;
-}
-
-.tier-header::before {
-  content: '';
-  position: absolute;
-  right: 26px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 12px;
-  background: var(--phosphor-dim);
-  border-radius: 6px;
-  opacity: 0.2;
+  background: linear-gradient(90deg, rgba(51,255,51,0.04) 0%, transparent 100%);
+  border-bottom: 1px dashed rgba(51,255,51,0.2);
 }
 
 .tier-number {
   font-family: var(--pixel);
-  font-size: 10px;
+  font-size: 9px;
   color: var(--phosphor);
   letter-spacing: 0.15em;
   margin-bottom: 4px;
@@ -256,11 +356,11 @@ body::after {
 }
 
 .tier-label {
-  font-family: var(--hand);
-  font-size: 32px;
-  font-weight: 700;
+  font-family: var(--vt);
+  font-size: 36px;
   color: var(--warm-white);
   line-height: 1;
+  letter-spacing: 0.03em;
 }
 
 .tier-desc {
@@ -270,13 +370,26 @@ body::after {
   margin-top: 4px;
 }
 
-/* === MOVIE ENTRY === */
+/* VHS glitch on tier header hover */
+.tier-header:hover .tier-label {
+  animation: chromatic-split 0.35s ease;
+}
+
+@keyframes chromatic-split {
+  0%, 100% { text-shadow: none; transform: none; }
+  15% { text-shadow: -3px 0 rgba(255,50,50,0.6), 3px 0 rgba(50,50,255,0.6); transform: translateX(2px); }
+  30% { transform: translateX(-1px) skewX(1.5deg); text-shadow: -2px 0 rgba(50,50,255,0.5), 2px 0 rgba(255,50,50,0.5); }
+  50% { transform: skewX(-1deg); text-shadow: -1px 0 rgba(255,50,50,0.4), 1px 0 rgba(50,50,255,0.4); }
+  70% { transform: translateX(1px); }
+}
+
+/* === MOVIE === */
 .movie {
-  border-bottom: 1px solid rgba(51,255,102,0.15);
+  border-bottom: 1px solid rgba(51,255,51,0.12);
   position: relative;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .movie.visible {
@@ -286,69 +399,74 @@ body::after {
 
 .movie-top {
   display: grid;
-  grid-template-columns: 115px 1fr;
+  grid-template-columns: 110px 1fr;
   cursor: pointer;
   position: relative;
 }
 
-/* Static noise on hover */
-.movie-top:hover::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  animation: noise-shift 0.1s steps(3) infinite;
+.movie-top:hover {
+  background: rgba(51,255,51,0.02);
 }
 
-@keyframes noise-shift {
-  0% { transform: translate(0,0); }
-  33% { transform: translate(-2px,1px); }
-  66% { transform: translate(1px,-1px); }
-  100% { transform: translate(0,0); }
+/* Phosphor glow intensify on hover */
+.movie-top:hover .movie-title {
+  color: var(--phosphor);
+  text-shadow: 0 0 10px var(--phosphor-glow), 0 0 20px var(--phosphor-glow);
 }
 
 .movie-poster {
   padding: 10px;
   position: relative;
-  overflow: hidden;
 }
 
 .movie-poster img {
   width: 100%;
   display: block;
-  border: 2px solid rgba(51,255,102,0.2);
-  filter: saturate(0.7) contrast(1.1) brightness(0.95);
+  border-radius: 4px;
+  filter: saturate(0.65) contrast(1.1) brightness(0.9);
   transition: filter 0.2s ease;
-  image-rendering: auto;
+  position: relative;
 }
 
 .movie-top:hover .movie-poster img {
-  filter: saturate(0.4) contrast(1.3) brightness(1.1) hue-rotate(10deg);
+  filter: saturate(0.5) contrast(1.3) brightness(1.05);
 }
 
-/* VHS date stamp on poster */
-.movie-poster .vhs-stamp {
+/* Scan lines on poster */
+.movie-poster::after {
+  content: '';
   position: absolute;
-  bottom: 14px;
-  right: 14px;
-  font-family: var(--vt);
-  font-size: 14px;
-  color: var(--tape-yellow);
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
-  opacity: 0.8;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.1) 3px,
+    rgba(0,0,0,0.1) 6px
+  );
+  pointer-events: none;
+  border-radius: 4px;
 }
 
 .movie-poster .idx-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 13px; left: 13px;
   font-family: var(--pixel);
-  font-size: 8px;
+  font-size: 7px;
   background: var(--phosphor);
   color: var(--crt-bg);
-  padding: 3px 6px;
+  padding: 3px 5px;
   z-index: 2;
+}
+
+.movie-poster .vhs-date {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  font-family: var(--vt);
+  font-size: 14px;
+  color: var(--amber);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+  opacity: 0.75;
 }
 
 .movie-info {
@@ -359,41 +477,44 @@ body::after {
 }
 
 .movie-title {
-  font-family: var(--hand);
-  font-size: 24px;
-  font-weight: 700;
+  font-family: var(--vt);
+  font-size: 26px;
   color: var(--warm-white);
   line-height: 1.05;
-}
-
-.movie-top:hover .movie-title {
-  color: var(--phosphor);
-  text-shadow: 0 0 8px var(--phosphor-glow);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
 }
 
 .movie-meta {
   font-family: var(--vt);
   font-size: 16px;
   color: var(--warm-cream);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
-.movie-meta .year {
-  color: var(--phosphor);
-}
+.movie-meta .year { color: var(--amber); }
 
 .movie-rating {
-  margin-top: 6px;
+  margin-top: 5px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.movie-rating .stars {
-  font-family: var(--vt);
-  font-size: 20px;
-  color: var(--tape-yellow);
-  letter-spacing: 1px;
+.movie-rating .bar-track {
+  width: 60px;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+  border-radius: 1px;
+}
+
+.movie-rating .bar-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: var(--phosphor);
+  box-shadow: 0 0 6px var(--phosphor-glow);
+  border-radius: 1px;
 }
 
 .movie-rating .score {
@@ -402,6 +523,7 @@ body::after {
   color: var(--phosphor-dim);
 }
 
+/* Tape labels for genres */
 .movie-tags {
   display: flex;
   flex-wrap: wrap;
@@ -412,22 +534,23 @@ body::after {
 .movie-tags span {
   font-family: var(--vt);
   font-size: 14px;
-  color: var(--phosphor);
-  background: rgba(51,255,102,0.08);
-  border: 1px solid rgba(51,255,102,0.2);
+  color: var(--crt-bg);
+  background: var(--warm-cream);
   padding: 1px 6px;
+  border-radius: 2px;
+  font-weight: 400;
 }
 
 .movie-streaming {
   font-family: var(--vt);
   font-size: 14px;
-  color: rgba(232,220,200,0.4);
+  color: rgba(232,220,200,0.35);
   margin-top: 6px;
 }
 
 .movie-streaming .platform {
   color: var(--warm-cream);
-  border-bottom: 1px dashed var(--phosphor-dim);
+  border-bottom: 1px dashed var(--amber-dim);
 }
 
 .movie-play-hint {
@@ -435,25 +558,25 @@ body::after {
   font-size: 7px;
   color: var(--phosphor-dim);
   text-align: right;
-  padding-top: 4px;
-  letter-spacing: 0.08em;
+  margin-top: 4px;
+  letter-spacing: 0.06em;
 }
 
-/* === EXPANDED DETAILS === */
+/* === DETAILS (terminal typed reveal) === */
 .movie-details {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.4s ease;
 }
 
 .movie-details.open {
-  max-height: 500px;
+  max-height: 600px;
 }
 
 .movie-details-inner {
-  padding: 10px 16px 14px;
-  background: rgba(51,255,102,0.03);
-  border-top: 1px dashed rgba(51,255,102,0.2);
+  padding: 10px 14px 14px;
+  background: rgba(51,255,51,0.03);
+  border-top: 1px dashed rgba(51,255,51,0.2);
   font-family: var(--vt);
   font-size: 18px;
   line-height: 1.5;
@@ -464,7 +587,7 @@ body::after {
   font-family: var(--pixel);
   font-size: 8px;
   color: var(--phosphor);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   margin-bottom: 4px;
   text-shadow: 0 0 6px var(--phosphor-glow);
 }
@@ -473,10 +596,28 @@ body::after {
   margin-bottom: 12px;
 }
 
+/* Typed text animation */
+.movie-details-inner .typed-text {
+  border-right: 2px solid var(--phosphor);
+  animation: cursor-blink 0.6s steps(1) infinite;
+  white-space: normal;
+}
+
+.movie-details-inner .typed-text.done {
+  border-right-color: transparent;
+  animation: none;
+}
+
+@keyframes cursor-blink {
+  0%, 49% { border-right-color: var(--phosphor); }
+  50%, 100% { border-right-color: transparent; }
+}
+
 .movie-details-inner .dna-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  margin-top: 6px;
 }
 
 .movie-details-inner .dna-tags span {
@@ -485,31 +626,40 @@ body::after {
   background: var(--phosphor);
   color: var(--crt-bg);
   padding: 1px 6px;
-  font-weight: 700;
+  border-radius: 2px;
 }
 
-/* === VHS GLITCH on TIER HEADERS === */
-.tier-header:hover .tier-label {
-  animation: vhs-glitch 0.3s ease;
+/* === TIER TRANSITION STATIC BURST === */
+.static-burst {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: overlay;
 }
 
-@keyframes vhs-glitch {
-  0%, 100% { transform: none; text-shadow: none; }
-  15% { transform: translateX(3px); text-shadow: -3px 0 var(--vhs-red), 3px 0 var(--vhs-blue); }
-  30% { transform: translateX(-2px) skewX(2deg); }
-  45% { transform: translateX(1px); text-shadow: -2px 0 var(--vhs-blue), 2px 0 var(--vhs-red); }
-  60% { transform: translateX(-1px) skewX(-1deg); }
-  75% { transform: translateX(2px); text-shadow: -1px 0 var(--vhs-red), 1px 0 var(--vhs-blue); }
+.static-burst.flash {
+  animation: static-flash 0.25s steps(4) forwards;
 }
 
-/* === SCROLL PROGRESS (tape reel) === */
+@keyframes static-flash {
+  0% { opacity: 0.4; }
+  25% { opacity: 0.2; transform: translate(2px, -1px); }
+  50% { opacity: 0.35; transform: translate(-1px, 2px); }
+  75% { opacity: 0.15; transform: translate(1px, -2px); }
+  100% { opacity: 0; }
+}
+
+/* === TAPE PROGRESS === */
 .tape-progress {
   position: fixed;
   bottom: 14px;
   right: 14px;
-  width: 50px;
-  height: 50px;
-  z-index: 100;
+  width: 48px;
+  height: 48px;
+  z-index: 200;
   pointer-events: none;
 }
 
@@ -521,24 +671,23 @@ body::after {
 
 .tape-progress .track {
   fill: none;
-  stroke: rgba(51,255,102,0.15);
+  stroke: rgba(51,255,51,0.12);
   stroke-width: 4;
 }
 
-.tape-progress .fill {
+.tape-progress .fill-ring {
   fill: none;
   stroke: var(--phosphor);
   stroke-width: 4;
   stroke-dasharray: 132;
   stroke-dashoffset: 132;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 4px var(--phosphor-glow));
+  filter: drop-shadow(0 0 3px var(--phosphor-glow));
 }
 
 .tape-progress .center-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%,-50%);
   font-family: var(--pixel);
   font-size: 7px;
@@ -547,8 +696,8 @@ body::after {
 
 /* === FOOTER === */
 .footer {
-  padding: 20px 16px;
-  background: linear-gradient(0deg, #1a1a2e 0%, var(--crt-bg) 100%);
+  padding: 20px 14px;
+  background: linear-gradient(0deg, #1e1e2a 0%, var(--crt-bg) 100%);
   font-family: var(--vt);
   font-size: 16px;
   color: var(--warm-cream);
@@ -557,33 +706,32 @@ body::after {
 .footer-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
   border: 1px solid var(--phosphor-dim);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .footer-stat {
   padding: 8px 10px;
-  border-bottom: 1px solid rgba(51,255,102,0.15);
+  border-bottom: 1px solid rgba(51,255,51,0.12);
 }
 
-.footer-stat:nth-child(odd) { border-right: 1px solid rgba(51,255,102,0.15); }
+.footer-stat:nth-child(odd) { border-right: 1px solid rgba(51,255,51,0.12); }
 
 .footer-stat .stat-label {
   font-family: var(--pixel);
   font-size: 7px;
   color: var(--phosphor);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   display: block;
   margin-bottom: 2px;
 }
 
 .footer-sources {
   font-size: 14px;
-  color: rgba(232,220,200,0.4);
+  color: rgba(232,220,200,0.35);
   border-top: 1px dashed var(--phosphor-dim);
-  padding-top: 12px;
-  margin-top: 12px;
+  padding-top: 10px;
+  margin-top: 10px;
 }
 
 .footer-sources .src-label { color: var(--phosphor-dim); }
@@ -597,150 +745,135 @@ body::after {
 
 .footer-end .rewind {
   font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--tape-yellow);
-  letter-spacing: 0.15em;
-  animation: rewind-blink 2s steps(1) infinite;
+  font-size: 9px;
+  color: var(--amber);
+  letter-spacing: 0.12em;
+  animation: rewind-pulse 2.5s steps(1) infinite;
 }
 
-@keyframes rewind-blink {
-  0%, 60% { opacity: 1; }
-  61%, 80% { opacity: 0; }
-  81%, 100% { opacity: 1; }
+@keyframes rewind-pulse {
+  0%, 65% { opacity: 1; }
+  66%, 82% { opacity: 0; }
+  83%, 100% { opacity: 1; }
 }
 
 .footer-end .eject {
-  font-family: var(--hand);
-  font-size: 22px;
+  font-family: var(--vt);
+  font-size: 20px;
   color: var(--warm-cream);
   margin-top: 8px;
-  opacity: 0.6;
-}
-
-/* === NAV INDEX === */
-.nav-index {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--phosphor-dim);
-  background: rgba(51,255,102,0.02);
-}
-
-.nav-index a {
-  display: block;
-  font-family: var(--vt);
-  font-size: 18px;
-  color: var(--warm-cream);
-  text-decoration: none;
-  padding: 4px 0;
-  border-bottom: 1px dashed rgba(51,255,102,0.1);
-  transition: color 0.15s ease, padding-left 0.15s ease;
-}
-
-.nav-index a:last-child { border-bottom: none; }
-
-.nav-index a:hover {
-  color: var(--phosphor);
-  padding-left: 8px;
-  text-shadow: 0 0 6px var(--phosphor-glow);
-}
-
-.nav-index .ch-num {
-  font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--phosphor);
-  margin-right: 10px;
-  vertical-align: middle;
+  opacity: 0.5;
 }
 </style>
 </head>
 <body>
 
-<!-- VHS Tracking bar -->
+<!-- BOOT SCREEN -->
+<div class="boot-screen" id="boot-screen">
+  <div class="boot-text" id="boot-text"></div>
+</div>
+
+<!-- NOISE OVERLAY -->
+<div class="noise-overlay"></div>
+
+<!-- STATIC BURST (tier transitions) -->
+<div class="static-burst" id="static-burst"></div>
+
+<!-- TRACKING BAR -->
 <div class="tracking-bar" id="tracking-bar"></div>
 
-<!-- HEADER -->
-<header class="header">
-  <div class="header-top">
-    <div class="header-logo">
-      REWIND
-      <span class="sub">VHS Film Vault</span>
+<!-- CRT SCREEN -->
+<div class="crt-screen" id="crt-screen" style="opacity:0">
+
+  <!-- VHS STATUS BAR -->
+  <div class="vhs-bar">
+    <div class="play-status">
+      <span class="play-icon"></span>
+      <span>PLAY</span>
     </div>
-    <div class="rec-badge">
+    <div class="counter" id="tape-counter">00:00:00</div>
+    <div class="rec-indicator">
       <span class="rec-dot"></span> REC
     </div>
   </div>
-  <div class="header-info">
-    <span>20 TAPES LOADED</span>
-    <span>2026-03-28</span>
-  </div>
-</header>
 
-<!-- TAPE COUNTER (sticky) -->
-<div class="tape-counter">
-  <span id="tape-label">PLAY &#9654;</span>
-  <span class="counter-num" id="tape-num">00:00:00</span>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="header-logo">
+        REWIND
+        <span class="sub">VHS Film Vault</span>
+      </div>
+    </div>
+    <div class="header-info">
+      <span>20 TAPES LOADED</span>
+      <span class="amber">2026-03-28</span>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-index">
+    <a href="#ch-1"><span class="ch-num">CH.01</span> Direct Matches</a>
+    <a href="#ch-2"><span class="ch-num">CH.02</span> Claustrophobic Single-Location</a>
+    <a href="#ch-3"><span class="ch-num">CH.03</span> Survival Pressure Cookers</a>
+    <a href="#ch-4"><span class="ch-num">CH.04</span> Adjacent Deep Cuts</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="main"></main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-stats">
+      <div class="footer-stat"><span class="stat-label">TOTAL TAPES</span>20</div>
+      <div class="footer-stat"><span class="stat-label">YEAR RANGE</span>2001 - 2024</div>
+      <div class="footer-stat"><span class="stat-label">AVG RATING</span>3.0 / 5.0</div>
+      <div class="footer-stat"><span class="stat-label">AUDIO</span>ENGLISH ONLY</div>
+      <div class="footer-stat"><span class="stat-label">CURATION</span>DEEP CUTS</div>
+      <div class="footer-stat"><span class="stat-label">VERSION</span>BATCH 1.0</div>
+    </div>
+    <div class="footer-sources">
+      <span class="src-label">SOURCES:</span> Reddit r/horror, r/MovieSuggestions, r/movies, Letterboxd, BestSimilar, CBR, Creepy Catalog, JustWatch
+    </div>
+    <div class="footer-end">
+      <div class="rewind">&lt;&lt; BE KIND, REWIND &gt;&gt;</div>
+      <div class="eject">-- eject tape to continue --</div>
+    </div>
+  </footer>
+
 </div>
 
-<!-- NAV -->
-<nav class="nav-index">
-  <a href="#ch-1"><span class="ch-num">CH.01</span> Direct Matches</a>
-  <a href="#ch-2"><span class="ch-num">CH.02</span> Claustrophobic Single-Location</a>
-  <a href="#ch-3"><span class="ch-num">CH.03</span> Survival Pressure Cookers</a>
-  <a href="#ch-4"><span class="ch-num">CH.04</span> Adjacent Deep Cuts</a>
-</nav>
-
-<!-- MAIN -->
-<main id="main"></main>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-stats">
-    <div class="footer-stat"><span class="stat-label">TOTAL TAPES</span>20</div>
-    <div class="footer-stat"><span class="stat-label">YEAR RANGE</span>2001-2024</div>
-    <div class="footer-stat"><span class="stat-label">AVG RATING</span>3.0 / 5.0</div>
-    <div class="footer-stat"><span class="stat-label">AUDIO</span>ENGLISH ONLY</div>
-    <div class="footer-stat"><span class="stat-label">CURATION</span>DEEP CUTS</div>
-    <div class="footer-stat"><span class="stat-label">VERSION</span>BATCH 1.0</div>
-  </div>
-  <div class="footer-sources">
-    <span class="src-label">SOURCES:</span> Reddit r/horror, r/MovieSuggestions, r/movies, Letterboxd, BestSimilar, CBR, Creepy Catalog, JustWatch
-  </div>
-  <div class="footer-end">
-    <div class="rewind">&lt;&lt; BE KIND, REWIND &gt;&gt;</div>
-    <div class="eject">-- eject tape to continue --</div>
-  </div>
-</footer>
-
 <!-- TAPE PROGRESS -->
-<div class="tape-progress" id="tape-progress">
+<div class="tape-progress" id="tape-progress" style="opacity:0">
   <svg viewBox="0 0 50 50">
     <circle class="track" cx="25" cy="25" r="21" />
-    <circle class="fill" id="progress-fill" cx="25" cy="25" r="21" />
+    <circle class="fill-ring" id="progress-fill" cx="25" cy="25" r="21" />
   </svg>
   <div class="center-text" id="progress-text">0%</div>
 </div>
 
 <script>
 var MOVIES = [
-  { id:1, title:"Right at Your Door", year:2006, director:"Chris Gorak", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","thriller","domestic horror","dirty bomb"], dna:["isolation","claustrophobia","bleak","societal-collapse","psychological-horror"], rating:3.1, why:"Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Same claustrophobic domestic apocalypse tension as The Divide.", streaming:{svod:[],avod:["Tubi","Pluto TV"]}, poster:"https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg" },
-  { id:2, title:"Hidden", year:2015, director:"Matt Duffer, Ross Duffer", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","survival","family horror","bunker"], dna:["isolation","claustrophobia","survival","bunker","psychological-horror"], rating:3.1, why:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg" },
-  { id:3, title:"Carriers", year:2009, director:"Alex Pastor, David Pastor", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","pandemic","road movie","survival"], dna:["survival","societal-collapse","bleak","psychological-horror"], rating:2.8, why:"Four survivors navigate a pandemic wasteland with strict rules to avoid infection. Moral decay under survival pressure mirrors The Divide.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg" },
-  { id:4, title:"It Comes at Night", year:2017, director:"Trey Edward Shults", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","psychological horror","paranoia","isolation"], dna:["isolation","claustrophobia","bleak","psychological-horror","survival"], rating:3.1, why:"Family boarded up in a house during an unspecified plague. Trust erodes into paranoia and violence.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
-  { id:5, title:"Await Further Instructions", year:2018, director:"Johnny Kevorkian", tier:"t1_direct_matches", genre_tags:["sci-fi horror","isolation","family dysfunction","lockdown"], dna:["isolation","claustrophobia","psychological-horror","societal-collapse"], rating:2.5, why:"Family trapped in their house on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions.", streaming:{svod:["Netflix","Shudder"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg" },
-  { id:6, title:"Coherence", year:2013, director:"James Ward Byrkit", tier:"t2_claustrophobic", genre_tags:["sci-fi","psychological thriller","single-location","quantum"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.7, why:"Dinner party goes wrong when a comet passes overhead. Reality fractures. Pure Divide energy in a confined space.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg" },
-  { id:7, title:"Pontypool", year:2008, director:"Bruce McDonald", tier:"t2_claustrophobic", genre_tags:["horror","single-location","language virus","siege"], dna:["isolation","claustrophobia","psychological-horror"], rating:3.3, why:"Radio DJ trapped in his station as a virus spreads through the English language. Cerebral claustrophobia.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" },
-  { id:8, title:"The Platform", year:2019, director:"Galder Gaztelu-Urrutia", tier:"t2_claustrophobic", genre_tags:["sci-fi horror","social allegory","vertical prison","survival"], dna:["claustrophobia","survival","bleak","societal-collapse"], rating:3.4, why:"Vertical prison where food descends level by level. Brutal social allegory of resource scarcity.", streaming:{svod:["Netflix"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg" },
-  { id:9, title:"Exam", year:2009, director:"Stuart Hazeldine", tier:"t2_claustrophobic", genre_tags:["psychological thriller","single-room","corporate horror","puzzle"], dna:["claustrophobia","psychological-horror"], rating:3.3, why:"Eight candidates in a single room for a final job interview. One question, 80 minutes, strict rules.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg" },
-  { id:10, title:"The Bar", year:2017, director:"Alex de la Iglesia", tier:"t2_claustrophobic", genre_tags:["thriller","dark comedy","single-location","siege"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.0, why:"Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Darkly comic locked-room survival.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg" },
-  { id:11, title:"Circle", year:2015, director:"Aaron Hann, Mario Miscione", tier:"t3_survival", genre_tags:["sci-fi","social experiment","voting","survival"], dna:["survival","psychological-horror","bleak"], rating:2.9, why:"50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology.", streaming:{svod:["Netflix"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
-  { id:12, title:"Would You Rather", year:2012, director:"David Guy Levy", tier:"t3_survival", genre_tags:["horror","survival game","dinner party","sadism"], dna:["survival","claustrophobia","bleak","psychological-horror"], rating:2.8, why:"Desperate guests forced into increasingly brutal 'would you rather' choices. Escalating violence, moral compromise.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg" },
-  { id:13, title:"Fermat's Room", year:2007, director:"Luis Piedrahita, Rodrigo Sopena", tier:"t3_survival", genre_tags:["thriller","puzzle","shrinking room","intellectual horror"], dna:["claustrophobia","survival","psychological-horror"], rating:3.2, why:"Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg" },
-  { id:14, title:"Level 16", year:2018, director:"Danishka Esterhazy", tier:"t3_survival", genre_tags:["dystopian","sci-fi horror","institutional horror","escape"], dna:["claustrophobia","isolation","psychological-horror","bleak"], rating:3.0, why:"Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Clinical dread.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg" },
-  { id:15, title:"The Incident", year:2014, director:"Isaac Ezban", tier:"t3_survival", genre_tags:["sci-fi horror","infinite loop","existential","Mexican cinema"], dna:["claustrophobia","isolation","psychological-horror","bleak"], rating:3.1, why:"Two groups trapped in infinite loops. Time passes but space repeats. Existential claustrophobia.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
-  { id:16, title:"Pandorum", year:2009, director:"Christian Alvart", tier:"t4_adjacent", genre_tags:["sci-fi horror","space","amnesia","survival"], dna:["isolation","claustrophobia","survival","psychological-horror"], rating:3.2, why:"Crew wakes on a spaceship with no memory. The Divide in space -- claustrophobic corridors and psychological breakdown.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg" },
-  { id:17, title:"The Void", year:2016, director:"Jeremy Gillespie, Steven Kostanski", tier:"t4_adjacent", genre_tags:["cosmic horror","siege","body horror","Lovecraftian"], dna:["isolation","claustrophobia","psychological-horror","bleak"], rating:3.0, why:"People trapped in a hospital surrounded by cultists. Cosmic horror, practical effects, Carpenter-esque.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
-  { id:18, title:"Breathing Room", year:2008, director:"John Suits, Gabriel Cowan", tier:"t4_adjacent", genre_tags:["thriller","survival game","single-room","puzzle"], dna:["claustrophobia","survival","psychological-horror"], rating:2.4, why:"Strangers wake in a locked white room wearing explosive collars. Ultra-low-budget but effective.", streaming:{svod:[],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg" },
-  { id:19, title:"The Hole", year:2001, director:"Nick Hamm", tier:"t4_adjacent", genre_tags:["psychological thriller","bunker","teen horror","unreliable narrator"], dna:["claustrophobia","isolation","psychological-horror","bunker"], rating:2.9, why:"Four teens voluntarily lock themselves in a WWII bunker. Voluntary confinement turning deadly. Early Keira Knightley.", streaming:{svod:["Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg" },
-  { id:20, title:"The Bunker", year:2024, director:"Adrian Langley", tier:"t4_adjacent", genre_tags:["post-apocalyptic","bunker","survival","indie horror"], dna:["isolation","claustrophobia","survival","societal-collapse","bleak"], rating:2.6, why:"Survivors in a bunker after nuclear event. The most direct spiritual successor to The Divide in recent years.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg" }
+  { id:1, title:"Right at Your Door", year:2006, director:"Chris Gorak", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","thriller","domestic horror","dirty bomb"], dna:["isolation","claustrophobia","bleak","societal-collapse","psychological-horror"], rating:3.1, why:"Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Same claustrophobic domestic apocalypse tension as The Divide. Paranoia escalates in a sealed space with dwindling trust.", streaming:{svod:[],avod:["Tubi","Pluto TV"]}, poster:"https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg" },
+  { id:2, title:"Hidden", year:2015, director:"Matt Duffer, Ross Duffer", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","survival","family horror","bunker"], dna:["isolation","claustrophobia","survival","bunker","psychological-horror"], rating:3.1, why:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending. Same shelter-in-place dread.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg" },
+  { id:3, title:"Carriers", year:2009, director:"Alex Pastor, David Pastor", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","pandemic","road movie","survival"], dna:["survival","societal-collapse","bleak","psychological-horror"], rating:2.8, why:"Four survivors navigate a pandemic wasteland with strict rules to avoid infection. Moral decay under survival pressure mirrors The Divide's group disintegration.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg" },
+  { id:4, title:"It Comes at Night", year:2017, director:"Trey Edward Shults", tier:"t1_direct_matches", genre_tags:["post-apocalyptic","psychological horror","paranoia","isolation"], dna:["isolation","claustrophobia","bleak","psychological-horror","survival"], rating:3.1, why:"Family boarded up in a house during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
+  { id:5, title:"Await Further Instructions", year:2018, director:"Johnny Kevorkian", tier:"t1_direct_matches", genre_tags:["sci-fi horror","isolation","family dysfunction","lockdown"], dna:["isolation","claustrophobia","psychological-horror","societal-collapse"], rating:2.5, why:"Family trapped in their house on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions. Sealed-in paranoia.", streaming:{svod:["Netflix","Shudder"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg" },
+  { id:6, title:"Coherence", year:2013, director:"James Ward Byrkit", tier:"t2_claustrophobic", genre_tags:["sci-fi","psychological thriller","single-location","quantum"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.7, why:"Dinner party goes wrong when a comet passes overhead. Reality fractures. Shot in a single house with improvised dialogue. Pure Divide energy.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg" },
+  { id:7, title:"Pontypool", year:2008, director:"Bruce McDonald", tier:"t2_claustrophobic", genre_tags:["horror","single-location","language virus","siege"], dna:["isolation","claustrophobia","psychological-horror"], rating:3.3, why:"Radio DJ trapped in his station as a virus spreads through the English language. The horror is in what you hear, not what you see. Cerebral claustrophobia.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" },
+  { id:8, title:"The Platform", year:2019, director:"Galder Gaztelu-Urrutia", tier:"t2_claustrophobic", genre_tags:["sci-fi horror","social allegory","vertical prison","survival"], dna:["claustrophobia","survival","bleak","societal-collapse"], rating:3.4, why:"Vertical prison where food descends level by level. Same resource scarcity and moral collapse as The Divide but as brutal social allegory.", streaming:{svod:["Netflix"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg" },
+  { id:9, title:"Exam", year:2009, director:"Stuart Hazeldine", tier:"t2_claustrophobic", genre_tags:["psychological thriller","single-room","corporate horror","puzzle"], dna:["claustrophobia","psychological-horror"], rating:3.3, why:"Eight candidates in a single room for a final job interview. One question, 80 minutes, strict rules. Confined-space tension distilled.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg" },
+  { id:10, title:"The Bar", year:2017, director:"Alex de la Iglesia", tier:"t2_claustrophobic", genre_tags:["thriller","dark comedy","single-location","siege"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.0, why:"Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg" },
+  { id:11, title:"Circle", year:2015, director:"Aaron Hann, Mario Miscione", tier:"t3_survival", genre_tags:["sci-fi","social experiment","voting","survival"], dna:["survival","psychological-horror","bleak"], rating:2.9, why:"50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology with no escape.", streaming:{svod:["Netflix"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
+  { id:12, title:"Would You Rather", year:2012, director:"David Guy Levy", tier:"t3_survival", genre_tags:["horror","survival game","dinner party","sadism"], dna:["survival","claustrophobia","bleak","psychological-horror"], rating:2.8, why:"Desperate guests at a rich man's dinner party forced into increasingly brutal 'would you rather' choices. Escalating violence, moral compromise.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg" },
+  { id:13, title:"Fermat's Room", year:2007, director:"Luis Piedrahita, Rodrigo Sopena", tier:"t3_survival", genre_tags:["thriller","puzzle","shrinking room","intellectual horror"], dna:["claustrophobia","survival","psychological-horror"], rating:3.2, why:"Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival mechanism.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg" },
+  { id:14, title:"Level 16", year:2018, director:"Danishka Esterhazy", tier:"t3_survival", genre_tags:["dystopian","sci-fi horror","institutional horror","escape"], dna:["claustrophobia","isolation","psychological-horror","bleak"], rating:3.0, why:"Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia with a body-horror twist.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg" },
+  { id:15, title:"The Incident", year:2014, director:"Isaac Ezban", tier:"t3_survival", genre_tags:["sci-fi horror","infinite loop","existential","Mexican cinema"], dna:["claustrophobia","isolation","psychological-horror","bleak"], rating:3.1, why:"Two groups trapped in infinite loops -- one in a stairwell, one on a highway. Time passes but space repeats. Existential claustrophobia.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
+  { id:16, title:"Pandorum", year:2009, director:"Christian Alvart", tier:"t4_adjacent", genre_tags:["sci-fi horror","space","amnesia","survival"], dna:["isolation","claustrophobia","survival","psychological-horror"], rating:3.2, why:"Crew wakes on a spaceship with no memory. Something is hunting them in the dark. The Divide in space.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg" },
+  { id:17, title:"The Void", year:2016, director:"Jeremy Gillespie, Steven Kostanski", tier:"t4_adjacent", genre_tags:["cosmic horror","siege","body horror","Lovecraftian"], dna:["isolation","claustrophobia","psychological-horror","bleak"], rating:3.0, why:"People trapped in a hospital surrounded by cultists. Cosmic horror seeps in. Practical effects, siege dynamics, Carpenter-esque.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
+  { id:18, title:"Breathing Room", year:2008, director:"John Suits, Gabriel Cowan", tier:"t4_adjacent", genre_tags:["thriller","survival game","single-room","puzzle"], dna:["claustrophobia","survival","psychological-horror"], rating:2.4, why:"Strangers wake in a locked white room wearing explosive collars. Must figure out the rules or die. Ultra-low-budget but effective.", streaming:{svod:[],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg" },
+  { id:19, title:"The Hole", year:2001, director:"Nick Hamm", tier:"t4_adjacent", genre_tags:["psychological thriller","bunker","teen horror","unreliable narrator"], dna:["claustrophobia","isolation","psychological-horror","bunker"], rating:2.9, why:"Four teens voluntarily lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley.", streaming:{svod:["Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg" },
+  { id:20, title:"The Bunker", year:2024, director:"Adrian Langley", tier:"t4_adjacent", genre_tags:["post-apocalyptic","bunker","survival","indie horror"], dna:["isolation","claustrophobia","survival","societal-collapse","bleak"], rating:2.6, why:"Survivors in a bunker after nuclear event. Resources dwindle, tensions rise, paranoia sets in. The most direct successor to The Divide.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg" }
 ];
 
 var TIERS = [
@@ -750,6 +883,7 @@ var TIERS = [
   { key:"t4_adjacent", num:"CH.04", label:"Adjacent Deep Cuts", desc:"Shares DNA but diverges in subgenre", id:"ch-4" }
 ];
 
+/* ---- Helpers ---- */
 function el(tag, attrs, children) {
   var e = document.createElement(tag);
   if (attrs) {
@@ -757,6 +891,7 @@ function el(tag, attrs, children) {
       if (k === 'className') e.className = attrs[k];
       else if (k === 'onclick') e.onclick = attrs[k];
       else if (k === 'onerror') e.onerror = attrs[k];
+      else if (k === 'style' && typeof attrs[k] === 'object') Object.assign(e.style, attrs[k]);
       else e.setAttribute(k, attrs[k]);
     });
   }
@@ -764,17 +899,6 @@ function el(tag, attrs, children) {
   else if (Array.isArray(children)) children.forEach(function(c) { if (c) e.appendChild(c); });
   else if (children instanceof Node) e.appendChild(children);
   return e;
-}
-
-function buildStars(rating) {
-  var full = Math.floor(rating);
-  var half = (rating - full) >= 0.4;
-  var s = '';
-  for (var i = 0; i < full; i++) s += '\u2588';
-  if (half) s += '\u2592';
-  var remain = 5 - full - (half ? 1 : 0);
-  for (var j = 0; j < remain; j++) s += '\u2591';
-  return s;
 }
 
 function buildStreamingNodes(s) {
@@ -788,24 +912,68 @@ function buildStreamingNodes(s) {
   }
   all.forEach(function(p, i) {
     if (i > 0) frag.appendChild(document.createTextNode(' / '));
-    var label = p.free ? p.name + ' (free)' : p.name;
-    frag.appendChild(el('span', {className:'platform'}, label));
+    frag.appendChild(el('span', {className:'platform'}, p.free ? p.name + ' (free)' : p.name));
   });
   return frag;
 }
 
-function toggleDetails(id) {
-  var d = document.getElementById('details-' + id);
-  if (d) {
-    d.classList.toggle('open');
-    // Trigger tracking bar effect
-    var bar = document.getElementById('tracking-bar');
-    bar.classList.remove('active');
-    void bar.offsetWidth;
-    bar.classList.add('active');
+/* ---- Typed text effect ---- */
+var activeTypers = {};
+
+function typeText(element, text, speed) {
+  var i = 0;
+  element.textContent = '';
+  element.classList.remove('done');
+  var id = element.id;
+  if (activeTypers[id]) clearInterval(activeTypers[id]);
+  activeTypers[id] = setInterval(function() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+    } else {
+      clearInterval(activeTypers[id]);
+      delete activeTypers[id];
+      element.classList.add('done');
+    }
+  }, speed || 12);
+}
+
+function stopTyper(id) {
+  if (activeTypers[id]) {
+    clearInterval(activeTypers[id]);
+    delete activeTypers[id];
   }
 }
 
+/* ---- Toggle details with typed reveal ---- */
+function toggleDetails(movieId) {
+  var d = document.getElementById('details-' + movieId);
+  if (!d) return;
+
+  // Trigger tracking bar
+  var bar = document.getElementById('tracking-bar');
+  bar.classList.remove('active');
+  void bar.offsetWidth;
+  bar.classList.add('active');
+
+  if (d.classList.contains('open')) {
+    d.classList.remove('open');
+    var typedEl = document.getElementById('typed-' + movieId);
+    if (typedEl) {
+      stopTyper('typed-' + movieId);
+      typedEl.classList.add('done');
+    }
+  } else {
+    d.classList.add('open');
+    var typedEl = document.getElementById('typed-' + movieId);
+    var movie = MOVIES.find(function(m) { return m.id === movieId; });
+    if (typedEl && movie) {
+      typeText(typedEl, movie.why, 14);
+    }
+  }
+}
+
+/* ---- Render ---- */
 function render() {
   var main = document.getElementById('main');
   var globalIdx = 0;
@@ -813,49 +981,42 @@ function render() {
   TIERS.forEach(function(tier) {
     var section = el('section', {className:'tier', id:tier.id});
 
-    // Tier header with tape reel icons
-    var header = el('div', {className:'tier-header'}, [
+    section.appendChild(el('div', {className:'tier-header'}, [
       el('div', {className:'tier-number'}, tier.num),
       el('div', {className:'tier-label'}, tier.label),
       el('div', {className:'tier-desc'}, tier.desc)
-    ]);
-    section.appendChild(header);
+    ]));
 
     var tierMovies = MOVIES.filter(function(m) { return m.tier === tier.key; });
 
     tierMovies.forEach(function(movie) {
       globalIdx++;
       var idx = String(globalIdx).padStart(2, '0');
-
+      var barWidth = (movie.rating / 5) * 100;
       var article = el('article', {className:'movie', 'data-idx':String(globalIdx)});
 
-      // Poster
       var img = el('img', {src:movie.poster, alt:movie.title, loading:'lazy'});
       img.onerror = function() { this.onerror = null; this.src = movie.fallback; };
 
       var posterDiv = el('div', {className:'movie-poster'}, [
         el('span', {className:'idx-badge'}, idx),
         img,
-        el('span', {className:'vhs-stamp'}, String(movie.year))
+        el('span', {className:'vhs-date'}, String(movie.year))
       ]);
 
-      // Rating
+      var barFill = el('span', {className:'bar-fill'});
+      barFill.style.width = barWidth + '%';
       var ratingDiv = el('div', {className:'movie-rating'}, [
-        el('span', {className:'stars'}, buildStars(movie.rating)),
-        el('span', {className:'score'}, movie.rating.toFixed(1) + '/5.0')
+        el('span', {className:'bar-track'}, barFill),
+        el('span', {className:'score'}, movie.rating.toFixed(1) + '/5')
       ]);
 
-      // Tags
       var tagsDiv = el('div', {className:'movie-tags'});
-      movie.genre_tags.forEach(function(t) {
-        tagsDiv.appendChild(el('span', {}, t));
-      });
+      movie.genre_tags.forEach(function(t) { tagsDiv.appendChild(el('span', {}, t)); });
 
-      // Streaming
       var streamDiv = el('div', {className:'movie-streaming'});
       streamDiv.appendChild(buildStreamingNodes(movie.streaming));
 
-      // Info column
       var infoDiv = el('div', {className:'movie-info'}, [
         el('div', {}, [
           el('div', {className:'movie-title'}, movie.title),
@@ -870,22 +1031,20 @@ function render() {
         el('div', {className:'movie-play-hint'}, '[ PRESS PLAY ]')
       ]);
 
-      var movieId = movie.id;
-      var top = el('div', {className:'movie-top', onclick:function() { toggleDetails(movieId); }}, [
-        posterDiv,
-        infoDiv
+      var mid = movie.id;
+      var top = el('div', {className:'movie-top', onclick:function() { toggleDetails(mid); }}, [
+        posterDiv, infoDiv
       ]);
 
-      // Expandable details
+      // Details with typed text
+      var typedSpan = el('span', {className:'typed-text done', id:'typed-' + movie.id});
       var dnaDiv = el('div', {className:'dna-tags'});
-      movie.dna.forEach(function(d) {
-        dnaDiv.appendChild(el('span', {}, d));
-      });
+      movie.dna.forEach(function(d) { dnaDiv.appendChild(el('span', {}, d)); });
 
       var details = el('div', {className:'movie-details', id:'details-' + movie.id}, [
         el('div', {className:'movie-details-inner'}, [
           el('div', {className:'detail-label'}, 'WHY THIS TAPE'),
-          el('div', {className:'detail-text'}, movie.why),
+          el('div', {className:'detail-text'}, typedSpan),
           el('div', {className:'detail-label'}, 'DNA MARKERS'),
           dnaDiv
         ])
@@ -900,40 +1059,104 @@ function render() {
   });
 }
 
-// Intersection observer for scroll-in
+/* ---- Scroll observers ---- */
 function observeMovies() {
   var observer = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, { threshold: 0.08 });
   document.querySelectorAll('.movie').forEach(function(e) { observer.observe(e); });
 }
 
-// Scroll-driven tape counter + progress ring
+/* Tier transition static burst */
+function observeTiers() {
+  var burst = document.getElementById('static-burst');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        burst.classList.remove('flash');
+        void burst.offsetWidth;
+        burst.classList.add('flash');
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.tier-header').forEach(function(e) { observer.observe(e); });
+}
+
+/* ---- Scroll-driven tape counter + progress ---- */
 function updateOnScroll() {
   var scrollTop = window.scrollY;
   var docHeight = document.documentElement.scrollHeight - window.innerHeight;
   var pct = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
 
-  // Tape counter (fake timecode)
   var totalSec = Math.floor(pct * 7200);
   var h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
   var m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
   var s = String(totalSec % 60).padStart(2, '0');
-  document.getElementById('tape-num').textContent = h + ':' + m + ':' + s;
+  document.getElementById('tape-counter').textContent = h + ':' + m + ':' + s;
 
-  // Progress ring
   var circumference = 2 * Math.PI * 21;
-  var offset = circumference * (1 - pct);
-  document.getElementById('progress-fill').style.strokeDashoffset = String(offset);
+  document.getElementById('progress-fill').style.strokeDashoffset = String(circumference * (1 - pct));
   document.getElementById('progress-text').textContent = Math.round(pct * 100) + '%';
 }
 
+/* ---- CRT Boot sequence ---- */
+function bootSequence() {
+  var bootScreen = document.getElementById('boot-screen');
+  var bootText = document.getElementById('boot-text');
+  var lines = [
+    '> INITIALIZING SYSTEM...',
+    '> LOADING VHS DECODER v2.1',
+    '> SCANNING TAPE LIBRARY...',
+    '> 20 TAPES FOUND',
+    '> CHECKING TRACKING...... OK',
+    '> CRT PHOSPHOR WARM-UP',
+    '> SIGNAL ACQUIRED',
+    '> PRESS PLAY _'
+  ];
+
+  lines.forEach(function(text) {
+    var lineEl = document.createElement('div');
+    lineEl.className = 'line';
+    lineEl.textContent = text;
+    bootText.appendChild(lineEl);
+  });
+
+  var lineEls = bootText.querySelectorAll('.line');
+  var delay = 0;
+  lineEls.forEach(function(lineEl, i) {
+    delay += 180 + Math.random() * 120;
+    setTimeout(function() {
+      lineEl.classList.add('show');
+    }, delay);
+  });
+
+  // After all lines, flicker and reveal
+  setTimeout(function() {
+    bootScreen.classList.add('boot-flicker');
+    setTimeout(function() {
+      bootScreen.classList.add('off');
+      document.getElementById('crt-screen').style.opacity = '1';
+      document.getElementById('tape-progress').style.opacity = '1';
+
+      // Trigger initial tracking bar
+      var bar = document.getElementById('tracking-bar');
+      bar.classList.add('active');
+    }, 400);
+  }, delay + 500);
+}
+
+/* ---- Init ---- */
 render();
-observeMovies();
+
+bootSequence();
+
+// Start observers after boot finishes
+setTimeout(function() {
+  observeMovies();
+  observeTiers();
+}, 3000);
 
 var ticking = false;
 window.addEventListener('scroll', function() {
@@ -945,12 +1168,6 @@ window.addEventListener('scroll', function() {
     ticking = true;
   }
 });
-
-// Initial tracking bar animation on load
-setTimeout(function() {
-  var bar = document.getElementById('tracking-bar');
-  bar.classList.add('active');
-}, 500);
 </script>
 </body>
 </html>
