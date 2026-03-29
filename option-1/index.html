@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Celluloid — A Film Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #F5F2ED;
+  --ink: #1A1A1A;
+  --ink-light: #4A4A4A;
+  --ink-muted: #8A8580;
+  --accent: #6B3A3A;
+  --accent-light: #8B5A5A;
+  --rule: #D4CFC8;
+  --cream: #FAF8F5;
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', -apple-system, Helvetica Neue, sans-serif;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  max-width: 430px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  z-index: 100;
+  padding: 16px 24px 12px;
+  background: var(--bg);
+  transition: background 0.4s, box-shadow 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(245, 242, 237, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--rule);
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.nav-logo span {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--ink-light);
+  transition: color 0.2s;
+}
+
+.nav-icon:active {
+  color: var(--accent);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  margin-top: 56px;
+  height: 520px;
+  overflow: hidden;
+}
+
+.hero-image-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 0.1s linear;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(26,26,26,0) 0%,
+    rgba(26,26,26,0.05) 40%,
+    rgba(26,26,26,0.6) 75%,
+    rgba(26,26,26,0.88) 100%
+  );
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px 28px;
+  color: #fff;
+}
+
+.hero-tier-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 10px;
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.hero-meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 14px;
+}
+
+.hero-meta .dot {
+  margin: 0 6px;
+  opacity: 0.5;
+}
+
+.hero-blurb {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  max-width: 340px;
+}
+
+.hero-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.12);
+  padding: 5px 10px;
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
+}
+
+.hero-rating svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── BOOKMARK BUTTON ── */
+.bookmark-btn {
+  position: absolute;
+  top: 72px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+  z-index: 2;
+}
+
+.bookmark-btn:active {
+  transform: scale(0.85);
+}
+
+.bookmark-btn.saved {
+  background: var(--accent);
+  animation: bookmarkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bookmarkPop {
+  0% { transform: scale(0.85); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.bookmark-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+  transition: fill 0.2s;
+}
+
+.bookmark-btn.saved svg {
+  fill: #fff;
+}
+
+/* ── STREAMING PILLS ── */
+.streaming-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.stream-pill {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+}
+
+.stream-pill--dark {
+  background: var(--cream);
+  color: var(--ink-light);
+}
+
+/* ── SECTION HEADERS ── */
+.section {
+  padding: 0 24px;
+}
+
+.section-header {
+  padding: 48px 0 8px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.section-number {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.section-desc {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+  line-height: 1.5;
+  padding-bottom: 4px;
+}
+
+/* ── EDITORIAL MOVIE ITEMS ── */
+.film-entry {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.film-entry.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.film-entry--featured {
+  padding: 32px 0;
+}
+
+.film-poster-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.film-poster-wrap--full {
+  aspect-ratio: 2/3;
+  max-height: 420px;
+}
+
+.film-poster-wrap--half {
+  aspect-ratio: 16/10;
+  max-height: 200px;
+}
+
+.film-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.25, 0, 0.25, 1);
+}
+
+.film-entry:active .film-poster {
+  transform: scale(1.03);
+}
+
+.film-poster-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(245,242,237,0.6), transparent);
+  pointer-events: none;
+}
+
+.film-number {
+  font-family: var(--serif);
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--rule);
+  line-height: 1;
+  margin-bottom: -8px;
+  letter-spacing: -0.04em;
+}
+
+.film-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.film-director {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+
+.film-director span {
+  color: var(--ink-light);
+}
+
+.film-year {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent);
+}
+
+.film-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.film-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.film-rating svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+
+.film-genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.genre-tag {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule);
+  padding: 3px 8px;
+  border-radius: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.film-entry:active .genre-tag {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.film-blurb {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-light);
+  margin-top: 12px;
+}
+
+.film-streaming {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  padding: 36px 24px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  margin: 8px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.pull-quote.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pull-quote blockquote {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.pull-quote cite {
+  display: block;
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 14px;
+}
+
+/* ── DUAL LAYOUT ── */
+.dual-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.dual-row.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dual-poster-wrap {
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.dual-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.25, 0, 0.25, 1);
+}
+
+.dual-item:active .dual-poster {
+  transform: scale(1.04);
+}
+
+.dual-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.dual-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+}
+
+.dual-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dual-rating svg {
+  width: 11px;
+  height: 11px;
+  color: var(--accent);
+}
+
+.dual-streaming {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.dual-streaming .stream-pill--dark {
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
+/* ── COMPACT LIST ── */
+.compact-entry {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.compact-entry.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.compact-poster-wrap {
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.compact-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.compact-info {
+  padding-top: 2px;
+}
+
+.compact-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.compact-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+
+.compact-blurb {
+  font-family: var(--serif);
+  font-size: 12.5px;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--ink-light);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compact-streaming {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.compact-streaming .stream-pill--dark {
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
+/* ── EDITORIAL DIVIDER ── */
+.editorial-divider {
+  text-align: center;
+  padding: 32px 24px;
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.editorial-divider.visible {
+  opacity: 1;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 24px 48px;
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  margin-top: 20px;
+}
+
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.footer-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 16px;
+}
+
+.footer-sub {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-content > * {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+.hero-content > *:nth-child(2) { animation-delay: 0.1s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.2s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.3s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.4s; }
+.hero-content > *:nth-child(6) { animation-delay: 0.5s; }
+
+/* ── HEART ANIMATION ── */
+.heart-anim {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  z-index: 999;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  opacity: 1;
+}
+
+.heart-anim.pop {
+  transform: translate(-50%,-50%) scale(1);
+}
+
+.heart-anim.fade {
+  opacity: 0;
+  transform: translate(-50%,-50%) scale(1.3);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-logo">Celluloid<span>journal</span></div>
+    <div class="nav-actions">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/>
+      </svg>
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO: It Comes at Night (Tier 1, strong visual) -->
+<section class="hero" id="hero">
+  <div class="hero-image-wrap">
+    <img class="hero-image" id="heroImg"
+      src="https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg"
+      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'"
+      alt="It Comes at Night">
+  </div>
+  <div class="hero-overlay"></div>
+  <button class="bookmark-btn" id="heroBookmark" aria-label="Bookmark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+  </button>
+  <div class="hero-content">
+    <span class="hero-tier-label">Editor's Pick — Direct Match</span>
+    <h1 class="hero-title">It Comes<br>at Night</h1>
+    <p class="hero-meta">Trey Edward Shults<span class="dot">·</span>2017</p>
+    <p class="hero-blurb">"The quintessential 'who can you trust in the apocalypse' film. Trust erodes into paranoia and violence."</p>
+    <div class="hero-rating">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      3.1 on Letterboxd
+    </div>
+    <div class="streaming-row" style="margin-top:12px">
+      <span class="stream-pill">Netflix</span>
+      <span class="stream-pill">Amazon Prime</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- ═══ TIER 1 ═══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-number">Issue No. 01</span>
+    <h2 class="section-title">Direct Matches</h2>
+    <p class="section-desc">Closest in tone, setting, and psychological intensity</p>
+  </div>
+
+  <!-- Right at Your Door — full editorial -->
+  <article class="film-entry film-entry--featured anim-target">
+    <div class="film-poster-wrap film-poster-wrap--full">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg'"
+        alt="Right at Your Door">
+      <div class="film-poster-overlay"></div>
+    </div>
+    <div class="film-title">Right at Your Door</div>
+    <div class="film-director"><span>Chris Gorak</span> <span class="film-year">· 2006</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.1
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Post-Apocalyptic</span>
+        <span class="genre-tag">Thriller</span>
+        <span class="genre-tag">Dirty Bomb</span>
+      </div>
+    </div>
+    <p class="film-blurb">Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Same claustrophobic domestic apocalypse tension. Paranoia escalates in a sealed space with dwindling trust.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Tubi</span>
+      <span class="stream-pill stream-pill--dark">Pluto TV</span>
+    </div>
+  </article>
+
+  <!-- Hidden + Carriers — dual layout -->
+  <div class="dual-row anim-target">
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg'"
+          alt="Hidden">
+      </div>
+      <div class="dual-title">Hidden</div>
+      <div class="dual-meta">Duffer Brothers · 2015</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.1
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Netflix</span>
+        <span class="stream-pill stream-pill--dark">Prime</span>
+      </div>
+    </div>
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg'"
+          alt="Carriers">
+      </div>
+      <div class="dual-title">Carriers</div>
+      <div class="dual-meta">Pastor Brothers · 2009</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        2.8
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Prime</span>
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Await Further Instructions — compact -->
+  <article class="compact-entry anim-target">
+    <div class="compact-poster-wrap">
+      <img class="compact-poster"
+        src="https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg'"
+        alt="Await Further Instructions">
+    </div>
+    <div class="compact-info">
+      <div class="compact-title">Await Further Instructions</div>
+      <div class="compact-meta">Johnny Kevorkian · 2018 · <svg style="width:11px;height:11px;vertical-align:-1px" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 2.5</div>
+      <p class="compact-blurb">Family trapped in their house on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions.</p>
+      <div class="compact-streaming">
+        <span class="stream-pill stream-pill--dark">Netflix</span>
+        <span class="stream-pill stream-pill--dark">Shudder</span>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- Pull Quote -->
+<div class="pull-quote anim-target">
+  <blockquote>"The horror is in what you hear, not what you see. Cerebral claustrophobia at its finest."</blockquote>
+  <cite>— On Pontypool</cite>
+</div>
+
+<!-- ═══ TIER 2 ═══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-number">Issue No. 02</span>
+    <h2 class="section-title">Claustrophobic<br>Single-Location</h2>
+    <p class="section-desc">Confined-space psychological tension with group dynamics</p>
+  </div>
+
+  <!-- Coherence — full editorial -->
+  <article class="film-entry film-entry--featured anim-target">
+    <div class="film-poster-wrap film-poster-wrap--full">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg'"
+        alt="Coherence">
+      <div class="film-poster-overlay"></div>
+    </div>
+    <div class="film-number">06</div>
+    <div class="film-title">Coherence</div>
+    <div class="film-director"><span>James Ward Byrkit</span> <span class="film-year">· 2013</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.7
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Sci-Fi</span>
+        <span class="genre-tag">Psychological</span>
+        <span class="genre-tag">Quantum</span>
+      </div>
+    </div>
+    <p class="film-blurb">Dinner party goes wrong when a comet passes overhead. Reality fractures. Shot in a single house with improvised dialogue. The paranoia and group dynamics in a confined space are pure tension.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Amazon Prime</span>
+      <span class="stream-pill stream-pill--dark">Tubi</span>
+    </div>
+  </article>
+
+  <!-- Pontypool — wide crop -->
+  <article class="film-entry anim-target">
+    <div class="film-poster-wrap film-poster-wrap--half">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg'"
+        alt="Pontypool">
+    </div>
+    <div class="film-title">Pontypool</div>
+    <div class="film-director"><span>Bruce McDonald</span> <span class="film-year">· 2008</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.3
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Horror</span>
+        <span class="genre-tag">Single-Location</span>
+        <span class="genre-tag">Language Virus</span>
+      </div>
+    </div>
+    <p class="film-blurb">Radio DJ trapped in his station as a virus spreads through the English language. Almost entirely one location. Cerebral claustrophobia.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Shudder</span>
+      <span class="stream-pill stream-pill--dark">Tubi</span>
+    </div>
+  </article>
+
+  <!-- The Platform + Exam — dual -->
+  <div class="dual-row anim-target">
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg'"
+          alt="The Platform">
+      </div>
+      <div class="dual-title">The Platform</div>
+      <div class="dual-meta">Gaztelu-Urrutia · 2019</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.4
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Netflix</span>
+      </div>
+    </div>
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg'"
+          alt="Exam">
+      </div>
+      <div class="dual-title">Exam</div>
+      <div class="dual-meta">Stuart Hazeldine · 2009</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.3
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+        <span class="stream-pill stream-pill--dark">Prime</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Bar — compact -->
+  <article class="compact-entry anim-target">
+    <div class="compact-poster-wrap">
+      <img class="compact-poster"
+        src="https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg'"
+        alt="The Bar">
+    </div>
+    <div class="compact-info">
+      <div class="compact-title">The Bar</div>
+      <div class="compact-meta">Alex de la Iglesia · 2017 · <svg style="width:11px;height:11px;vertical-align:-1px" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 3.0</div>
+      <p class="compact-blurb">Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other. Darkly comic locked-room survival.</p>
+      <div class="compact-streaming">
+        <span class="stream-pill stream-pill--dark">Netflix</span>
+        <span class="stream-pill stream-pill--dark">Prime</span>
+      </div>
+    </div>
+  </article>
+</div>
+
+<div class="editorial-divider anim-target" aria-hidden="true"></div>
+
+<!-- ═══ TIER 3 ═══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-number">Issue No. 03</span>
+    <h2 class="section-title">Survival<br>Pressure Cookers</h2>
+    <p class="section-desc">High-concept survival scenarios with moral dilemmas</p>
+  </div>
+
+  <!-- Circle — featured -->
+  <article class="film-entry film-entry--featured anim-target">
+    <div class="film-poster-wrap film-poster-wrap--half">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'"
+        alt="Circle">
+      <div class="film-poster-overlay"></div>
+    </div>
+    <div class="film-title">Circle</div>
+    <div class="film-director"><span>Aaron Hann, Mario Miscione</span> <span class="film-year">· 2015</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        2.9
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Sci-Fi</span>
+        <span class="genre-tag">Social Experiment</span>
+        <span class="genre-tag">Survival</span>
+      </div>
+    </div>
+    <p class="film-blurb">50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology with no escape. Strips group dynamics to the absolute minimum — just people and decisions.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Netflix</span>
+      <span class="stream-pill stream-pill--dark">Tubi</span>
+    </div>
+  </article>
+
+  <!-- Would You Rather + Fermat's Room — dual -->
+  <div class="dual-row anim-target">
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg'"
+          alt="Would You Rather">
+      </div>
+      <div class="dual-title">Would You Rather</div>
+      <div class="dual-meta">David Guy Levy · 2012</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        2.8
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+        <span class="stream-pill stream-pill--dark">Prime</span>
+      </div>
+    </div>
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg'"
+          alt="Fermat's Room">
+      </div>
+      <div class="dual-title">Fermat's Room</div>
+      <div class="dual-meta">Piedrahita & Sopena · 2007</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.2
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Prime</span>
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level 16 — compact -->
+  <article class="compact-entry anim-target">
+    <div class="compact-poster-wrap">
+      <img class="compact-poster"
+        src="https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg'"
+        alt="Level 16">
+    </div>
+    <div class="compact-info">
+      <div class="compact-title">Level 16</div>
+      <div class="compact-meta">Danishka Esterhazy · 2018 · <svg style="width:11px;height:11px;vertical-align:-1px" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 3.0</div>
+      <p class="compact-blurb">Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia with a body-horror twist.</p>
+      <div class="compact-streaming">
+        <span class="stream-pill stream-pill--dark">Shudder</span>
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- The Incident — compact -->
+  <article class="compact-entry anim-target">
+    <div class="compact-poster-wrap">
+      <img class="compact-poster"
+        src="https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg'"
+        alt="The Incident">
+    </div>
+    <div class="compact-info">
+      <div class="compact-title">The Incident</div>
+      <div class="compact-meta">Isaac Ezban · 2014 · <svg style="width:11px;height:11px;vertical-align:-1px" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 3.1</div>
+      <p class="compact-blurb">Two groups trapped in infinite loops — one in a stairwell, one on a highway. Time passes but space repeats. Mexican indie gem.</p>
+      <div class="compact-streaming">
+        <span class="stream-pill stream-pill--dark">Prime</span>
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- Pull Quote -->
+<div class="pull-quote anim-target">
+  <blockquote>"Claustrophobic corridors, resource scarcity, and psychological breakdown in a sealed environment — The Divide in space."</blockquote>
+  <cite>— On Pandorum</cite>
+</div>
+
+<!-- ═══ TIER 4 ═══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-number">Issue No. 04</span>
+    <h2 class="section-title">Adjacent<br>Deep Cuts</h2>
+    <p class="section-desc">Shares DNA but diverges in subgenre or setting</p>
+  </div>
+
+  <!-- Pandorum — full editorial -->
+  <article class="film-entry film-entry--featured anim-target">
+    <div class="film-poster-wrap film-poster-wrap--full">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg'"
+        alt="Pandorum">
+      <div class="film-poster-overlay"></div>
+    </div>
+    <div class="film-number">16</div>
+    <div class="film-title">Pandorum</div>
+    <div class="film-director"><span>Christian Alvart</span> <span class="film-year">· 2009</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.2
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Sci-Fi Horror</span>
+        <span class="genre-tag">Space</span>
+        <span class="genre-tag">Survival</span>
+      </div>
+    </div>
+    <p class="film-blurb">Crew wakes on a spaceship with no memory. Something is hunting them in the dark. Claustrophobic corridors, resource scarcity, and psychological breakdown in a sealed environment.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Amazon Prime</span>
+      <span class="stream-pill stream-pill--dark">Tubi</span>
+    </div>
+  </article>
+
+  <!-- The Void + Breathing Room — dual -->
+  <div class="dual-row anim-target">
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg'"
+          alt="The Void">
+      </div>
+      <div class="dual-title">The Void</div>
+      <div class="dual-meta">Gillespie & Kostanski · 2016</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        3.0
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Shudder</span>
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+    <div class="dual-item">
+      <div class="dual-poster-wrap">
+        <img class="dual-poster"
+          src="https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg"
+          onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg'"
+          alt="Breathing Room">
+      </div>
+      <div class="dual-title">Breathing Room</div>
+      <div class="dual-meta">Suits & Cowan · 2008</div>
+      <span class="dual-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        2.4
+      </span>
+      <div class="dual-streaming">
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Hole — wide editorial -->
+  <article class="film-entry anim-target">
+    <div class="film-poster-wrap film-poster-wrap--half">
+      <img class="film-poster"
+        src="https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg'"
+        alt="The Hole">
+    </div>
+    <div class="film-title">The Hole</div>
+    <div class="film-director"><span>Nick Hamm</span> <span class="film-year">· 2001</span></div>
+    <div class="film-rating-row">
+      <span class="film-rating">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        2.9
+      </span>
+      <div class="film-genre-tags">
+        <span class="genre-tag">Psychological</span>
+        <span class="genre-tag">Bunker</span>
+        <span class="genre-tag">Unreliable Narrator</span>
+      </div>
+    </div>
+    <p class="film-blurb">Four teens voluntarily lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley. The voluntary confinement turning deadly mirrors the shelter-gone-wrong premise.</p>
+    <div class="film-streaming">
+      <span class="stream-pill stream-pill--dark">Amazon Prime</span>
+    </div>
+  </article>
+
+  <!-- The Bunker — compact -->
+  <article class="compact-entry anim-target">
+    <div class="compact-poster-wrap">
+      <img class="compact-poster"
+        src="https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg"
+        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg'"
+        alt="The Bunker">
+    </div>
+    <div class="compact-info">
+      <div class="compact-title">The Bunker</div>
+      <div class="compact-meta">Adrian Langley · 2024 · <svg style="width:11px;height:11px;vertical-align:-1px" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 2.6</div>
+      <p class="compact-blurb">Survivors in a bunker after nuclear event. Resources dwindle, tensions rise. The most direct spiritual successor in recent years. Ultra-indie but committed.</p>
+      <div class="compact-streaming">
+        <span class="stream-pill stream-pill--dark">Tubi</span>
+        <span class="stream-pill stream-pill--dark">Prime</span>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Celluloid</div>
+  <p class="footer-tagline">A curated journal of cinema worth seeking out</p>
+  <p class="footer-sub">20 films curated from The Divide</p>
+</footer>
+
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── NAV SCROLL ──
+  var nav = document.getElementById('mainNav');
+
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // ── PARALLAX HERO ──
+  var heroImg = document.getElementById('heroImg');
+  window.addEventListener('scroll', function() {
+    var y = window.scrollY;
+    if (y < 700) {
+      var translate = y * 0.3;
+      var scale = 1.1 + (y * 0.0003);
+      heroImg.style.transform = 'scale(' + scale + ') translateY(' + (translate * 0.5) + 'px)';
+    }
+  }, { passive: true });
+
+  // ── SCROLL ANIMATIONS ──
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.anim-target').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // ── BOOKMARK MICRO-INTERACTION ──
+  var heroBookmark = document.getElementById('heroBookmark');
+  heroBookmark.addEventListener('click', function() {
+    heroBookmark.classList.toggle('saved');
+    var svg = heroBookmark.querySelector('svg');
+    if (heroBookmark.classList.contains('saved')) {
+      svg.setAttribute('fill', 'currentColor');
+    } else {
+      svg.setAttribute('fill', 'none');
+    }
+  });
+
+  // ── SECTION HEADERS ANIMATION ──
+  var headerObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        headerObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.section-header').forEach(function(el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    headerObserver.observe(el);
+  });
+
+  // ── DOUBLE TAP TO HEART (mobile gesture) ──
+  var lastTap = 0;
+
+  function createHeartSvg() {
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '40');
+    svg.setAttribute('height', '40');
+    svg.setAttribute('fill', 'var(--accent)');
+    var path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', 'M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z');
+    svg.appendChild(path);
+    return svg;
+  }
+
+  document.querySelectorAll('.film-entry, .dual-item, .compact-entry').forEach(function(el) {
+    el.addEventListener('touchend', function() {
+      var now = Date.now();
+      if (now - lastTap < 300) {
+        var heart = document.createElement('div');
+        heart.className = 'heart-anim';
+        heart.appendChild(createHeartSvg());
+        document.body.appendChild(heart);
+        requestAnimationFrame(function() {
+          heart.classList.add('pop');
+          setTimeout(function() {
+            heart.classList.remove('pop');
+            heart.classList.add('fade');
+            setTimeout(function() { heart.remove(); }, 300);
+          }, 400);
+        });
+      }
+      lastTap = now;
+    });
+  });
+
+  // ── EDITORIAL DIVIDER ──
+  var dividerEl = document.querySelector('.editorial-divider');
+  if (dividerEl) {
+    dividerEl.textContent = '';
+  }
+
+})();
+</script>
+</body>
+</html>
