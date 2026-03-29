@@ -1,0 +1,129 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "SF Pro Display Medium",
+      "role": "body"
+    },
+    {
+      "family": "SF Pro Display Regular",
+      "role": "body"
+    },
+    {
+      "family": "SF Pro Display Bold",
+      "role": "heading"
+    },
+    {
+      "family": "Open Runde",
+      "role": "unknown"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "role": "unknown"
+    }
+  ],
+  "colors": {
+    "primary": "#FF0000",
+    "accent": "#FF0000",
+    "background": "#FFFFFF",
+    "textPrimary": "#FF0000",
+    "link": "#FF0000"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "SF Pro Display Medium",
+      "heading": "SF Pro Display Bold"
+    },
+    "fontStacks": {
+      "heading": [
+        "SF Pro Display Regular",
+        "sans-serif"
+      ],
+      "body": [
+        "sans-serif"
+      ],
+      "paragraph": [
+        "SF Pro Display Regular",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "60px",
+      "h2": "50px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "0px"
+  },
+  "components": {
+    "buttonPrimary": {
+      "background": "#FF0000",
+      "textColor": "#0000EE",
+      "borderRadius": "36px",
+      "borderRadiusCorners": {
+        "topLeft": "36px",
+        "topRight": "36px",
+        "bottomRight": "36px",
+        "bottomLeft": "36px"
+      },
+      "shadow": "rgba(255, 255, 255, 0.4) 0px 0px 20px 1.64px inset, rgba(250, 95, 180, 0.13) 0px 0.839802px 0.503881px -0.3125px, rgba(250, 95, 180, 0.13) 0px 1.99048px 1.19429px -0.625px, rgba(250, 95, 180, 0.13) 0px 3.63084px 2.1785px -0.9375px, rgba(250, 95, 180, 0.13) 0px 6.03627px 3.62176px -1.25px, rgba(250, 95, 180, 0.13) 0px 9.74808px 5.84885px -1.5625px, rgba(250, 95, 180, 0.13) 0px 15.9566px 9.57398px -1.875px, rgba(250, 95, 180, 0.13) 0px 27.4762px 16.4857px -2.1875px, rgba(250, 95, 180, 0.13) 0px 50px 30px -2.5px"
+    },
+    "buttonSecondary": {
+      "background": "#383838",
+      "textColor": "#0000EE",
+      "borderRadius": "50px",
+      "borderRadiusCorners": {
+        "topLeft": "50px",
+        "topRight": "50px",
+        "bottomRight": "50px",
+        "bottomLeft": "50px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": null,
+    "favicon": "https://framerusercontent.com/images/tr7nhBtm5IP8mQCX9zI3dmTTo.png",
+    "ogImage": "https://framerusercontent.com/images/vmF1U6Wdui4NzUHwM7Y2ksxy4.png"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 1,
+      "text": "Get Access NowGet Access Now",
+      "reasoning": "Button #1 with text 'Get Access Now' is the primary CTA due to its vibrant red color, which stands out as the brand color, and its action-oriented text encouraging immediate engagement."
+    },
+    "secondary": {
+      "index": 0,
+      "text": "Get Started",
+      "reasoning": "Button #0 with text 'Get Started' is selected as secondary because it has a neutral background color (#383838), providing a contrast to the vibrant primary button."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "modern",
+    "energy": "high",
+    "targetAudience": "design professionals"
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": false,
+      "llmSucceeded": false,
+      "finalSource": "none"
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}
