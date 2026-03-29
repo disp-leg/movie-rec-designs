@@ -3,743 +3,977 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Collected — Film Picks</title>
+<title>Watchlist — Curated Picks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root {
-  --cream: #F5F0E8;
-  --stone: #D4CFC4;
   --sage: #B8C5B0;
-  --sage-light: #dce5d7;
-  --slate: #4A5568;
-  --slate-light: #718096;
-  --rose: #E8D5D5;
+  --sage-deep: #8FA284;
+  --cream: #F5F0E8;
+  --warm-slate: #4A5568;
+  --stone: #D4CFC4;
+  --soft-rose: #E8D5D5;
+  --lavender: #C5C0D6;
   --white: #FFFFFF;
+  --bg: #F8F4ED;
   --text: #2D3748;
-  --text-light: #718096;
-  --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  --radius: 20px;
-  --radius-sm: 14px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.06);
-  --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
-  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --text-secondary: #718096;
+  --text-muted: #A0AEC0;
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --shadow-soft: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-lift: 0 12px 40px rgba(0,0,0,0.10);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-html { font-size: 16px; }
+html {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
 
 body {
-  font-family: var(--font);
-  font-weight: 400;
-  background: var(--cream);
-  color: var(--text);
   max-width: 430px;
   margin: 0 auto;
-  overflow-x: hidden;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
 ::selection { background: var(--sage); color: var(--white); }
 
-/* === HEADER === */
+/* ====== HEADER ====== */
 .header {
-  padding: 48px 20px 24px;
+  padding: 56px 20px 20px;
+  position: relative;
 }
 
-.header-logo {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-
-.header-logo .dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: var(--sage);
-  border-radius: 50%;
-  margin-left: 2px;
-  vertical-align: super;
-}
-
-.header-sub {
-  font-size: 14px;
-  color: var(--text-light);
-  margin-top: 6px;
-  font-weight: 400;
-}
-
-.header-pills {
+.header-top {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  margin-top: 16px;
-  overflow-x: auto;
-  padding-bottom: 4px;
 }
 
-.header-pills::-webkit-scrollbar { display: none; }
-
-.header-pills a {
-  flex-shrink: 0;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--slate);
-  background: var(--white);
-  padding: 8px 16px;
-  border-radius: 100px;
-  text-decoration: none;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  transition: background 0.3s var(--ease), color 0.3s var(--ease), transform 0.3s var(--ease);
-}
-
-.header-pills a:hover {
+.logo-icon {
+  width: 32px;
+  height: 32px;
   background: var(--sage);
-  color: var(--white);
-  transform: translateY(-1px);
-}
-
-/* === TIER SECTION === */
-.tier-section {
-  padding: 8px 0 0;
-}
-
-.tier-label {
-  padding: 20px 20px 12px;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.tier-label .num {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sage);
-  background: var(--sage-light);
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.tier-label .title {
-  font-size: 18px;
+.logo-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--white);
+}
+
+.logo-text {
+  font-size: 17px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.3px;
 }
 
-.tier-label .count {
-  font-size: 12px;
-  color: var(--text-light);
-  margin-left: auto;
+.header-actions {
+  display: flex;
+  gap: 8px;
 }
 
-.tier-desc {
-  font-size: 13px;
-  color: var(--text-light);
-  padding: 0 20px 14px;
-}
-
-/* === BENTO GRID === */
-.bento-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0 14px 20px;
-}
-
-/* === BENTO TILE === */
-.bento-tile {
+.header-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-.bento-tile.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), box-shadow 0.35s var(--ease);
-}
-
-.bento-tile:hover,
-.bento-tile:active {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.bento-tile.visible:hover,
-.bento-tile.visible:active {
-  transform: translateY(-2px);
-}
-
-/* Sizing variants */
-.bento-tile.wide { grid-column: span 2; }
-.bento-tile.tall { grid-row: span 2; }
-
-/* === TILE: FEATURED (wide) === */
-.tile-featured {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  min-height: 160px;
-}
-
-.tile-featured .tile-poster {
-  position: relative;
-  overflow: hidden;
-}
-
-.tile-featured .tile-poster img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s var(--ease);
-}
-
-.bento-tile:hover .tile-poster img {
-  transform: scale(1.03);
-}
-
-.tile-featured .tile-body {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* === TILE: POSTER (1x1) === */
-.tile-poster-cell {
-  position: relative;
-  min-height: 220px;
-}
-
-.tile-poster-cell img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s var(--ease);
-}
-
-.bento-tile:hover .tile-poster-cell img {
-  transform: scale(1.03);
-}
-
-.tile-poster-cell .tile-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 14px;
-  background: linear-gradient(transparent 0%, rgba(0,0,0,0.55) 100%);
-  color: var(--white);
-}
-
-.tile-poster-cell .tile-overlay .tile-name {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.tile-poster-cell .tile-overlay .tile-year {
-  font-size: 12px;
-  opacity: 0.8;
-  margin-top: 2px;
-}
-
-/* === TILE: COMPACT (1x1) === */
-.tile-compact {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 140px;
-}
-
-/* === TILE: TALL (poster-dominant) === */
-.tile-tall-inner {
-  position: relative;
-  height: 100%;
-  min-height: 340px;
-}
-
-.tile-tall-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s var(--ease);
-}
-
-.bento-tile:hover .tile-tall-inner img {
-  transform: scale(1.03);
-}
-
-.tile-tall-inner .tile-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 16px;
-  background: linear-gradient(transparent 0%, rgba(0,0,0,0.6) 100%);
-  color: var(--white);
-}
-
-/* === SHARED TILE TEXT === */
-.tile-name {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.25;
-  color: var(--text);
-  letter-spacing: -0.01em;
-}
-
-.tile-year-dir {
-  font-size: 12px;
-  color: var(--text-light);
-  margin-top: 3px;
-}
-
-.tile-year-dir .yr { color: var(--sage); font-weight: 600; }
-
-.tile-rating {
-  font-size: 12px;
-  color: var(--slate-light);
-  margin-top: 4px;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform 0.2s var(--spring);
 }
 
-.tile-rating .stars {
-  color: var(--sage);
-  letter-spacing: 1px;
+.header-btn:active { transform: scale(0.92); }
+
+.header-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--warm-slate);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.tile-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.tile-tags span {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--slate);
-  background: var(--cream);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.tile-streaming {
-  font-size: 11px;
-  color: var(--text-light);
-  margin-top: 6px;
-}
-
-.tile-streaming .plat {
-  color: var(--slate);
-  font-weight: 500;
-}
-
-.tile-expand-hint {
-  font-size: 10px;
-  color: var(--sage);
-  font-weight: 600;
-  margin-top: 6px;
-  letter-spacing: 0.03em;
-}
-
-/* === COLOR ACCENT BACKGROUNDS FOR COMPACT TILES === */
-.bg-sage { background: var(--sage-light); }
-.bg-rose { background: var(--rose); }
-.bg-stone { background: var(--stone); }
-.bg-cream-alt { background: #EDE8DD; }
-
-/* === EXPANDED DETAILS OVERLAY === */
-.tile-details {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s var(--ease);
-}
-
-.tile-details.open {
-  max-height: 500px;
-}
-
-.tile-details-inner {
-  padding: 0 14px 14px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--text);
-}
-
-.tile-details-inner .dl {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--sage);
-  margin-bottom: 4px;
-  margin-top: 10px;
-}
-
-.tile-details-inner .dl:first-child { margin-top: 0; }
-
-.tile-details-inner .dt {
-  color: var(--text-light);
-  margin-bottom: 8px;
-}
-
-.tile-details-inner .dna-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.tile-details-inner .dna-wrap span {
-  font-size: 10px;
-  font-weight: 500;
-  background: var(--sage);
-  color: var(--white);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-/* Divider line overlay details */
-.tile-details-inner .divider {
-  height: 1px;
-  background: var(--stone);
-  margin: 10px 0;
-}
-
-/* === FOOTER === */
-.footer {
-  padding: 30px 20px 50px;
-  text-align: center;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.footer-chip {
-  background: var(--white);
-  border-radius: var(--radius-sm);
-  padding: 12px 8px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  text-align: center;
-}
-
-.footer-chip .fc-num {
-  font-size: 20px;
+.hero-text h1 {
+  font-size: 26px;
   font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
   color: var(--text);
 }
 
-.footer-chip .fc-label {
-  font-size: 10px;
-  color: var(--text-light);
-  margin-top: 2px;
-  font-weight: 500;
+.hero-text h1 em {
+  font-style: normal;
+  color: var(--sage-deep);
 }
 
-.footer-note {
-  font-size: 11px;
-  color: var(--text-light);
-  margin-top: 16px;
-  line-height: 1.7;
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 6px;
 }
 
-.footer-end {
-  font-size: 12px;
+/* ====== TIER PILL NAV ====== */
+.tier-nav {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tier-nav::-webkit-scrollbar { display: none; }
+
+.tier-pill {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--sage);
-  margin-top: 20px;
-  letter-spacing: 0.06em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  white-space: nowrap;
+  background: var(--white);
+  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
+
+.tier-pill.active {
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.tier-pill[data-tier="t1"].active { background: var(--sage-deep); }
+.tier-pill[data-tier="t2"].active { background: #8B7FB5; }
+.tier-pill[data-tier="t3"].active { background: #C4908F; }
+.tier-pill[data-tier="t4"].active { background: #8A8578; }
+
+.tier-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--white);
+  margin-left: 6px;
+}
+
+.tier-pill[data-tier="t1"] .tier-count { background: var(--sage-deep); }
+.tier-pill[data-tier="t2"] .tier-count { background: #8B7FB5; }
+.tier-pill[data-tier="t3"] .tier-count { background: #C4908F; }
+.tier-pill[data-tier="t4"] .tier-count { background: #8A8578; }
+.tier-pill.active .tier-count { background: rgba(255,255,255,0.3); }
+
+/* ====== BENTO GRID ====== */
+.bento-container { padding: 0 14px; }
+
+.tier-section { display: none; }
+.tier-section.active {
+  display: block;
+  animation: fadeUp 0.4s var(--ease) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tier-intro {
+  padding: 4px 6px 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.bento-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-t1 .tile:nth-child(1) { grid-column: 1 / -1; }
+.grid-t1 .tile:nth-child(4) { grid-column: 1 / -1; }
+
+.grid-t2 .tile:nth-child(1) { grid-column: 1 / -1; }
+.grid-t2 .tile:nth-child(4) { grid-column: 1 / -1; }
+
+.grid-t3 .tile:nth-child(1) { grid-column: 1 / -1; }
+.grid-t3 .tile:nth-child(5) { grid-column: 1 / -1; }
+
+.grid-t4 { grid-template-columns: 1fr; }
+
+/* ====== TILE BASE ====== */
+.tile {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease);
+  position: relative;
+  opacity: 0;
+  transform: translateY(24px) scale(0.97);
+}
+
+.tile.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--spring);
+}
+
+.tile:active {
+  transform: scale(0.97);
+  box-shadow: var(--shadow-lift);
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+  .tile:hover .tile-poster-img { transform: scale(1.04); }
+}
+
+/* ====== HERO TILE ====== */
+.tile-hero .tile-poster {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.tile-hero .tile-poster-img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.6s var(--ease);
+}
+
+.tile-hero .tile-poster-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, rgba(255,255,255,0.95));
+  pointer-events: none;
+}
+
+.tile-hero .tile-body { padding: 14px 18px 16px; }
+
+.tile-hero .tile-title {
+  font-size: 19px; font-weight: 700;
+  line-height: 1.2; letter-spacing: -0.3px; margin-bottom: 4px;
+}
+
+.tile-hero .tile-meta {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-secondary);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: var(--sage); color: var(--white);
+  font-size: 11px; font-weight: 600;
+  padding: 5px 11px; border-radius: 10px;
+  letter-spacing: 0.3px; z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ====== STANDARD TILE ====== */
+.tile-std .tile-poster {
+  position: relative;
+  aspect-ratio: 2/2.7;
+  overflow: hidden;
+}
+
+.tile-std .tile-poster-img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.6s var(--ease);
+}
+
+.tile-std .tile-body { padding: 12px 14px 14px; }
+
+.tile-std .tile-title {
+  font-size: 15px; font-weight: 600;
+  line-height: 1.2; margin-bottom: 3px;
+}
+
+.tile-std .tile-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary);
+}
+
+/* ====== WIDE TILE ====== */
+.tile-wide {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  min-height: 130px;
+}
+
+.tile-wide .tile-poster { position: relative; overflow: hidden; }
+
+.tile-wide .tile-poster-img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.6s var(--ease);
+}
+
+.tile-wide .tile-body {
+  padding: 14px 16px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+.tile-wide .tile-title {
+  font-size: 16px; font-weight: 600;
+  line-height: 1.2; margin-bottom: 4px;
+}
+
+.tile-wide .tile-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;
+}
+
+.tile-wide .tile-snippet {
+  font-size: 12px; color: var(--text-muted);
+  line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ====== COMPACT TILE ====== */
+.tile-compact {
+  display: grid;
+  grid-template-columns: 56px 1fr 28px;
+  align-items: center;
+  padding: 12px 14px; gap: 12px;
+}
+
+.tile-compact .tile-poster {
+  width: 56px; height: 76px;
+  border-radius: var(--radius-sm);
+  overflow: hidden; flex-shrink: 0;
+}
+
+.tile-compact .tile-poster-img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+
+.tile-compact .tile-title {
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.tile-compact .tile-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary);
+}
+
+.tile-arrow {
+  width: 20px; height: 20px;
+  stroke: var(--text-muted); fill: none;
+  stroke-width: 2; stroke-linecap: round;
+}
+
+/* ====== SHARED ====== */
+.rating {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-weight: 600; color: var(--text); font-size: inherit;
+}
+.rating-star { color: #D4A959; }
+.meta-dot { color: var(--stone); }
+
+.streaming-row {
+  display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;
+}
+.stream-pill {
+  font-size: 10px; font-weight: 500;
+  padding: 3px 8px; border-radius: 7px;
+  background: var(--cream); color: var(--text-secondary);
+}
+
+/* ====== TAG COLORS ====== */
+.tag-sage { background: rgba(184,197,176,0.3); color: #5C6D54; }
+.tag-rose { background: rgba(232,213,213,0.45); color: #8B6B6B; }
+.tag-lavender { background: rgba(197,192,214,0.35); color: #6B6580; }
+.tag-stone { background: rgba(212,207,196,0.45); color: #6B665E; }
+
+/* ====== SCROLL PROGRESS ====== */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; background: transparent; z-index: 100;
+  max-width: 430px; margin: 0 auto;
+}
+.scroll-progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--sage), var(--sage-deep));
+  border-radius: 0 2px 2px 0;
+  transition: width 0.1s linear;
+}
+
+/* ====== MODAL BOTTOM SHEET ====== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal-sheet {
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  max-width: 430px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.4s var(--spring);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+.modal-handle {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: var(--stone); margin: 12px auto 0;
+}
+
+.modal-poster-wrap { position: relative; }
+
+.modal-poster {
+  width: 100%; height: 280px;
+  object-fit: cover; display: block; margin-top: 12px;
+}
+
+.modal-close {
+  position: absolute; top: 24px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.modal-close svg {
+  width: 16px; height: 16px;
+  stroke: var(--text); stroke-width: 2.5; stroke-linecap: round;
+}
+
+.modal-body { padding: 20px 22px 24px; }
+
+.modal-title {
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.3px; margin-bottom: 4px;
+}
+
+.modal-meta {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;
+}
+
+.modal-section-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); margin-bottom: 6px; margin-top: 18px;
+}
+
+.modal-why {
+  font-size: 15px; color: var(--text); line-height: 1.6;
+}
+
+.modal-director {
+  font-size: 14px; color: var(--text-secondary);
+}
+
+.modal-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+}
+.modal-tag {
+  font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 10px;
+}
+
+.modal-streaming {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
+}
+.modal-stream-badge {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 12px; background: var(--cream); color: var(--warm-slate);
+}
+
+/* ====== FOOTER ====== */
+.footer {
+  text-align: center; padding: 40px 20px 32px;
+  color: var(--text-muted); font-size: 12px; line-height: 1.6;
+}
+.footer-logo { font-weight: 700; color: var(--text-secondary); font-size: 14px; margin-bottom: 4px; }
+
+/* Stagger delays */
+.tile:nth-child(1) { transition-delay: 0s; }
+.tile:nth-child(2) { transition-delay: 0.08s; }
+.tile:nth-child(3) { transition-delay: 0.16s; }
+.tile:nth-child(4) { transition-delay: 0.24s; }
+.tile:nth-child(5) { transition-delay: 0.32s; }
+
+::-webkit-scrollbar { width: 0; height: 0; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<div class="scroll-progress"><div class="scroll-progress-bar" id="progressBar"></div></div>
+
 <header class="header">
-  <h1 class="header-logo">Collected<span class="dot"></span></h1>
-  <p class="header-sub">20 films for when you need walls closing in</p>
-  <div class="header-pills">
-    <a href="#tier-1">Direct Matches</a>
-    <a href="#tier-2">Claustrophobic</a>
-    <a href="#tier-3">Survival</a>
-    <a href="#tier-4">Adjacent Cuts</a>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+      </div>
+      <span class="logo-text">Watchlist</span>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <button class="header-btn" aria-label="Filter">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="hero-text">
+    <h1>Films like<br><em>The Divide</em></h1>
+    <p class="hero-sub">20 handpicked deep cuts across 4 tiers</p>
   </div>
 </header>
 
-<!-- MAIN -->
-<main id="main"></main>
+<nav class="tier-nav" id="tierNav"></nav>
+<main class="bento-container" id="app"></main>
 
-<!-- FOOTER -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-poster-wrap">
+      <button class="modal-close" id="modalClose">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <img class="modal-poster" id="modalPoster" src="" alt="">
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <footer class="footer">
-  <div class="footer-grid">
-    <div class="footer-chip">
-      <div class="fc-num">20</div>
-      <div class="fc-label">Films</div>
-    </div>
-    <div class="footer-chip">
-      <div class="fc-num">3.0</div>
-      <div class="fc-label">Avg Rating</div>
-    </div>
-    <div class="footer-chip">
-      <div class="fc-num">4</div>
-      <div class="fc-label">Tiers</div>
-    </div>
-  </div>
-  <div class="footer-note">
-    Curated from Reddit, Letterboxd, BestSimilar,<br>
-    CBR, Creepy Catalog &amp; JustWatch
-  </div>
-  <div class="footer-end">deep cuts only</div>
+  <div class="footer-logo">Watchlist</div>
+  Curated with care &middot; Streaming may vary by region
 </footer>
 
 <script>
-var MOVIES = [
-  { id:1, title:"Right at Your Door", year:2006, director:"Chris Gorak", tier:"t1", genre_tags:["post-apocalyptic","thriller","domestic horror"], dna:["isolation","claustrophobia","bleak","societal-collapse"], rating:3.1, why:"Dirty bomb hits LA; husband seals himself inside while wife is outside. Claustrophobic domestic apocalypse tension.", streaming:{svod:[],avod:["Tubi","Pluto TV"]}, poster:"https://image.tmdb.org/t/p/w500/sBkCtdpkWRiisQ3vzyNOZ72biCB.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg" },
-  { id:2, title:"Hidden", year:2015, director:"Duffer Brothers", tier:"t1", genre_tags:["post-apocalyptic","survival","bunker"], dna:["isolation","claustrophobia","survival","bunker"], rating:3.1, why:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/mPuaHaczkoJDzlYD9GyXiDjMXig.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg" },
-  { id:3, title:"Carriers", year:2009, director:"Alex & David Pastor", tier:"t1", genre_tags:["pandemic","road movie","survival"], dna:["survival","societal-collapse","bleak"], rating:2.8, why:"Four survivors navigate a pandemic wasteland. Moral decay under survival pressure mirrors The Divide.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/jxjnjHtHXgvjdhkwpelE9ZwVMg6.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg" },
-  { id:4, title:"It Comes at Night", year:2017, director:"Trey Edward Shults", tier:"t1", genre_tags:["psychological horror","paranoia","isolation"], dna:["isolation","claustrophobia","bleak","survival"], rating:3.1, why:"Family boarded up during a plague. Another family arrives. Trust erodes into paranoia and violence.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/rNKJpFMlOZn5zkzBPZxEJrQn5Km.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
-  { id:5, title:"Await Further Instructions", year:2018, director:"Johnny Kevorkian", tier:"t1", genre_tags:["sci-fi horror","isolation","lockdown"], dna:["isolation","claustrophobia","societal-collapse"], rating:2.5, why:"Family trapped on Christmas Day by a mysterious barricade. TV gives sinister instructions. Sealed-in paranoia.", streaming:{svod:["Netflix","Shudder"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/afvi5tVi5S3Ux9faZaI32SmPRkj.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg" },
-  { id:6, title:"Coherence", year:2013, director:"James Ward Byrkit", tier:"t2", genre_tags:["sci-fi","psychological thriller","quantum"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.7, why:"Dinner party goes wrong when a comet passes. Reality fractures. Shot in a single house with improvised dialogue.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/ezUtb9m5DeLwL2gxi4gktzNCvQv.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg" },
-  { id:7, title:"Pontypool", year:2008, director:"Bruce McDonald", tier:"t2", genre_tags:["horror","single-location","language virus"], dna:["isolation","claustrophobia","psychological-horror"], rating:3.3, why:"Radio DJ trapped as a virus spreads through the English language. The horror is in what you hear, not see.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/uh4n9FSYYaeOWchP8gBPNtg7kD7.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" },
-  { id:8, title:"The Platform", year:2019, director:"Galder Gaztelu-Urrutia", tier:"t2", genre_tags:["sci-fi horror","social allegory","survival"], dna:["claustrophobia","survival","bleak","societal-collapse"], rating:3.4, why:"Vertical prison where food descends level by level. Brutal social allegory of resource scarcity and moral collapse.", streaming:{svod:["Netflix"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/iXvQnzy6JCAx1PiQEKXuTY04ZHl.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg" },
-  { id:9, title:"Exam", year:2009, director:"Stuart Hazeldine", tier:"t2", genre_tags:["psychological thriller","single-room","puzzle"], dna:["claustrophobia","psychological-horror"], rating:3.3, why:"Eight candidates in a single room. One question, 80 minutes, strict rules. Confined-space tension distilled.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/i1J2zBCyOQJKsQipqJ0qXERC1Ma.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg" },
-  { id:10, title:"The Bar", year:2017, director:"Alex de la Iglesia", tier:"t2", genre_tags:["thriller","dark comedy","siege"], dna:["claustrophobia","psychological-horror","isolation"], rating:3.0, why:"Patrons trapped in a bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other.", streaming:{svod:["Netflix","Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/vYyALnKnzHLv4PoU2b447GYT8R9.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg" },
-  { id:11, title:"Circle", year:2015, director:"Aaron Hann, Mario Miscione", tier:"t3", genre_tags:["sci-fi","social experiment","survival"], dna:["survival","psychological-horror","bleak"], rating:2.9, why:"50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology.", streaming:{svod:["Netflix"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/hbIL53MdZFJXsgxXaSOVuApWTs8.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg" },
-  { id:12, title:"Would You Rather", year:2012, director:"David Guy Levy", tier:"t3", genre_tags:["horror","survival game","sadism"], dna:["survival","claustrophobia","bleak"], rating:2.8, why:"Dinner guests forced into brutal 'would you rather' choices. Escalating violence, moral compromise.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/tos5MpjaOsAFVGjjieQlZsHlbd.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg" },
-  { id:13, title:"Fermat's Room", year:2007, director:"Piedrahita & Sopena", tier:"t3", genre_tags:["thriller","puzzle","shrinking room"], dna:["claustrophobia","survival","psychological-horror"], rating:3.2, why:"Four mathematicians in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/qQcYvPXxvk6bQDV9Zgd6cnDQmKZ.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg" },
-  { id:14, title:"Level 16", year:2018, director:"Danishka Esterhazy", tier:"t3", genre_tags:["dystopian","institutional horror","escape"], dna:["claustrophobia","isolation","bleak"], rating:3.0, why:"Girls in a boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/glVIjhLmzmgtppLWb3lvnoPljGW.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg" },
-  { id:15, title:"The Incident", year:2014, director:"Isaac Ezban", tier:"t3", genre_tags:["sci-fi horror","infinite loop","existential"], dna:["claustrophobia","isolation","bleak"], rating:3.1, why:"Two groups trapped in infinite loops. Time passes but space repeats. Existential claustrophobia.", streaming:{svod:[],avod:["Amazon Prime","Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/idb1ACZCQAsYJCFMfs9vgyBIbP1.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
-  { id:16, title:"Pandorum", year:2009, director:"Christian Alvart", tier:"t4", genre_tags:["sci-fi horror","space","amnesia"], dna:["isolation","claustrophobia","survival"], rating:3.2, why:"Crew wakes on a spaceship with no memory. The Divide in space \u2014 claustrophobic corridors and breakdown.", streaming:{svod:["Amazon Prime"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/mNMfa6r3pl0EzFIKEkVcxyr6Rc7.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg" },
-  { id:17, title:"The Void", year:2016, director:"Gillespie & Kostanski", tier:"t4", genre_tags:["cosmic horror","siege","Lovecraftian"], dna:["isolation","claustrophobia","bleak"], rating:3.0, why:"Trapped in a hospital surrounded by cultists. Cosmic horror, practical effects, Carpenter-esque.", streaming:{svod:["Shudder"],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/2WhZAPi3vomEQdzAPIYTvmvWaxI.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg" },
-  { id:18, title:"Breathing Room", year:2008, director:"Suits & Cowan", tier:"t4", genre_tags:["thriller","survival game","puzzle"], dna:["claustrophobia","survival"], rating:2.4, why:"Strangers wake in a locked room with explosive collars. Ultra-low-budget but effective confined-space tension.", streaming:{svod:[],avod:["Tubi"]}, poster:"https://image.tmdb.org/t/p/w500/aaz4rgsEjApkUz87OrFT6sNZDks.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg" },
-  { id:19, title:"The Hole", year:2001, director:"Nick Hamm", tier:"t4", genre_tags:["psychological thriller","bunker","teen horror"], dna:["claustrophobia","isolation","bunker"], rating:2.9, why:"Four teens lock themselves in a WWII bunker for a party. Things go wrong. Early Keira Knightley.", streaming:{svod:["Amazon Prime"],avod:[]}, poster:"https://image.tmdb.org/t/p/w500/n5aMoI6AZLJzUoNbjMj0P60EYMJ.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg" },
-  { id:20, title:"The Bunker", year:2024, director:"Adrian Langley", tier:"t4", genre_tags:["post-apocalyptic","bunker","indie horror"], dna:["isolation","claustrophobia","survival","bleak"], rating:2.6, why:"Survivors in a bunker after nuclear event. The most direct spiritual successor to The Divide.", streaming:{svod:[],avod:["Tubi","Amazon Prime"]}, poster:"https://image.tmdb.org/t/p/w500/jOA7chFPVzSyPp2DaRg8hqA1BHr.jpg", fallback:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg" }
-];
+(function() {
+  'use strict';
 
-var TIERS = [
-  { key:"t1", num:"01", label:"Direct Matches", desc:"Closest in tone and intensity to The Divide", id:"tier-1", count:5 },
-  { key:"t2", num:"02", label:"Claustrophobic", desc:"Confined-space tension with group dynamics", id:"tier-2", count:5 },
-  { key:"t3", num:"03", label:"Survival", desc:"High-concept survival with moral dilemmas", id:"tier-3", count:5 },
-  { key:"t4", num:"04", label:"Adjacent Cuts", desc:"Shares DNA but diverges in subgenre", id:"tier-4", count:5 }
-];
+  var MOVIES = [
+    {id:1,title:"Right at Your Door",year:2006,director:"Chris Gorak",tier:"t1",tags:["post-apocalyptic","thriller","domestic horror","dirty bomb"],rating:3.1,why:"Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Same claustrophobic domestic apocalypse tension as The Divide. Paranoia escalates in a sealed space with dwindling trust.",svod:[],avod:["Tubi","Pluto TV"],poster:"https://image.tmdb.org/t/p/w500/sBkCtdpkWRiisQ3vzyNOZ72biCB.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg"},
+    {id:2,title:"Hidden",year:2015,director:"Matt & Ross Duffer",tier:"t1",tags:["post-apocalyptic","survival","bunker"],rating:3.1,why:"Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending. Same shelter-in-place dread.",svod:["Netflix","Amazon Prime"],avod:[],poster:"https://image.tmdb.org/t/p/w500/mPuaHaczkoJDzlYD9GyXiDjMXig.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg"},
+    {id:3,title:"Carriers",year:2009,director:"Alex & David Pastor",tier:"t1",tags:["post-apocalyptic","pandemic","road movie"],rating:2.8,why:"Four survivors navigate a pandemic wasteland with strict rules to avoid infection. Moral decay under survival pressure mirrors The Divide's group disintegration. Stars Chris Pine pre-Star Trek fame.",svod:["Amazon Prime"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/jxjnjHtHXgvjdhkwpelE9ZwVMg6.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg"},
+    {id:4,title:"It Comes at Night",year:2017,director:"Trey Edward Shults",tier:"t1",tags:["post-apocalyptic","paranoia","isolation"],rating:3.1,why:"Family boarded up in a house during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence. The quintessential 'who can you trust in the apocalypse' film.",svod:["Netflix","Amazon Prime"],avod:[],poster:"https://image.tmdb.org/t/p/w500/rNKJpFMlOZn5zkzBPZxEJrQn5Km.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+    {id:5,title:"Await Further Instructions",year:2018,director:"Johnny Kevorkian",tier:"t1",tags:["sci-fi horror","isolation","lockdown"],rating:2.5,why:"Family trapped in their house on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions. Sealed-in paranoia with family tensions boiling over.",svod:["Netflix","Shudder"],avod:[],poster:"https://image.tmdb.org/t/p/w500/afvi5tVi5S3Ux9faZaI32SmPRkj.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg"},
+    {id:6,title:"Coherence",year:2013,director:"James Ward Byrkit",tier:"t2",tags:["sci-fi","psychological thriller","quantum"],rating:3.7,why:"Dinner party goes wrong when a comet passes overhead. Reality fractures. Shot in a single house with improvised dialogue. The paranoia and group dynamics in a confined space are pure Divide energy.",svod:["Amazon Prime"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/ezUtb9m5DeLwL2gxi4gktzNCvQv.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg"},
+    {id:7,title:"Pontypool",year:2008,director:"Bruce McDonald",tier:"t2",tags:["horror","single-location","language virus"],rating:3.3,why:"Radio DJ trapped in his station as a virus spreads through the English language. Almost entirely one location. The horror is in what you hear, not what you see. Cerebral claustrophobia.",svod:["Shudder"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/uh4n9FSYYaeOWchP8gBPNtg7kD7.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg"},
+    {id:8,title:"The Platform",year:2019,director:"Galder Gaztelu-Urrutia",tier:"t2",tags:["sci-fi horror","social allegory","survival"],rating:3.4,why:"Vertical prison where food descends level by level. Residents on upper floors feast; lower floors starve. Same resource scarcity and moral collapse as The Divide but as brutal social allegory.",svod:["Netflix"],avod:[],poster:"https://image.tmdb.org/t/p/w500/iXvQnzy6JCAx1PiQEKXuTY04ZHl.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg"},
+    {id:9,title:"Exam",year:2009,director:"Stuart Hazeldine",tier:"t2",tags:["psychological thriller","single-room","puzzle"],rating:3.3,why:"Eight candidates in a single room for a final job interview. One question, 80 minutes, strict rules. Group dynamics fracture under pressure. Confined-space tension distilled to its essence.",svod:[],avod:["Tubi","Amazon Prime"],poster:"https://image.tmdb.org/t/p/w500/i1J2zBCyOQJKsQipqJ0qXERC1Ma.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg"},
+    {id:10,title:"The Bar",year:2017,director:"Alex de la Iglesia",tier:"t2",tags:["thriller","dark comedy","siege"],rating:3.0,why:"Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other. Alex de la Iglesia's darkly comic take on the locked-room survival scenario.",svod:["Netflix","Amazon Prime"],avod:[],poster:"https://image.tmdb.org/t/p/w500/vYyALnKnzHLv4PoU2b447GYT8R9.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg"},
+    {id:11,title:"Circle",year:2015,director:"Aaron Hann, Mario Miscione",tier:"t3",tags:["sci-fi","social experiment","voting"],rating:2.9,why:"50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology with no escape. Strips The Divide's group dynamics to the absolute minimum.",svod:["Netflix"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/hbIL53MdZFJXsgxXaSOVuApWTs8.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg"},
+    {id:12,title:"Would You Rather",year:2012,director:"David Guy Levy",tier:"t3",tags:["horror","survival game","sadism"],rating:2.8,why:"Desperate guests at a rich man's dinner party forced into increasingly brutal 'would you rather' choices. Confined space, escalating violence, moral compromise under duress.",svod:[],avod:["Tubi","Amazon Prime"],poster:"https://image.tmdb.org/t/p/w500/tos5MpjaOsAFVGjjieQlZsHlbd.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg"},
+    {id:13,title:"Fermat's Room",year:2007,director:"Luis Piedrahita, Rodrigo Sopena",tier:"t3",tags:["thriller","puzzle","shrinking room"],rating:3.2,why:"Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival mechanism. Spanish-language gem with English-friendly accessibility.",svod:[],avod:["Amazon Prime","Tubi"],poster:"https://image.tmdb.org/t/p/w500/qQcYvPXxvk6bQDV9Zgd6cnDQmKZ.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg"},
+    {id:14,title:"Level 16",year:2018,director:"Danishka Esterhazy",tier:"t3",tags:["dystopian","sci-fi horror","institutional"],rating:3.0,why:"Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia with a body-horror twist. Clean, clinical dread.",svod:["Shudder"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/glVIjhLmzmgtppLWb3lvnoPljGW.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg"},
+    {id:15,title:"The Incident",year:2014,director:"Isaac Ezban",tier:"t3",tags:["sci-fi horror","infinite loop","existential"],rating:3.1,why:"Two groups trapped in infinite loops \u2014 one in a stairwell, one on a highway. Time passes but space repeats. Existential claustrophobia that gets under your skin. Mexican indie gem.",svod:[],avod:["Amazon Prime","Tubi"],poster:"https://image.tmdb.org/t/p/w500/idb1ACZCQAsYJCFMfs9vgyBIbP1.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+    {id:16,title:"Pandorum",year:2009,director:"Christian Alvart",tier:"t4",tags:["sci-fi horror","space","amnesia"],rating:3.2,why:"Crew wakes on a spaceship with no memory. Something is hunting them in the dark. Claustrophobic corridors, resource scarcity, and psychological breakdown \u2014 The Divide in space.",svod:["Amazon Prime"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/mNMfa6r3pl0EzFIKEkVcxyr6Rc7.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg"},
+    {id:17,title:"The Void",year:2016,director:"Jeremy Gillespie, Steven Kostanski",tier:"t4",tags:["cosmic horror","siege","body horror"],rating:3.0,why:"People trapped in a hospital surrounded by cultists. Cosmic horror seeps in. Practical effects, siege dynamics, and escalating dread. Carpenter-esque.",svod:["Shudder"],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/2WhZAPi3vomEQdzAPIYTvmvWaxI.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg"},
+    {id:18,title:"Breathing Room",year:2008,director:"John Suits, Gabriel Cowan",tier:"t4",tags:["thriller","survival game","puzzle"],rating:2.4,why:"Strangers wake in a locked white room wearing explosive collars. Must figure out the rules or die. Ultra-low-budget but effective confined-space tension.",svod:[],avod:["Tubi"],poster:"https://image.tmdb.org/t/p/w500/aaz4rgsEjApkUz87OrFT6sNZDks.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg"},
+    {id:19,title:"The Hole",year:2001,director:"Nick Hamm",tier:"t4",tags:["psychological thriller","bunker","teen horror"],rating:2.9,why:"Four teens voluntarily lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley. Voluntary confinement turning deadly.",svod:["Amazon Prime"],avod:[],poster:"https://image.tmdb.org/t/p/w500/n5aMoI6AZLJzUoNbjMj0P60EYMJ.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg"},
+    {id:20,title:"The Bunker",year:2024,director:"Adrian Langley",tier:"t4",tags:["post-apocalyptic","bunker","survival"],rating:2.6,why:"Survivors in a bunker after nuclear event. Resources dwindle, tensions rise, paranoia sets in. The most direct spiritual successor to The Divide in recent years.",svod:[],avod:["Tubi","Amazon Prime"],poster:"https://image.tmdb.org/t/p/w500/jOA7chFPVzSyPp2DaRg8hqA1BHr.jpg",fallback:"https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg"}
+  ];
 
-/* Tile layout patterns per tier - mix of wide, tall, compact, poster */
-var LAYOUTS = {
-  t1: ['featured', 'poster', 'poster', 'compact-sage', 'featured'],
-  t2: ['poster', 'compact-rose', 'featured', 'poster', 'compact-stone'],
-  t3: ['featured', 'poster', 'compact-sage', 'poster', 'featured'],
-  t4: ['compact-rose', 'poster', 'featured', 'poster', 'compact-stone']
-};
+  var TIERS = [
+    { key: "t1", name: "Direct Matches", desc: "Closest in tone and psychological intensity to The Divide" },
+    { key: "t2", name: "Claustrophobic", desc: "Confined-space psychological tension with group dynamics" },
+    { key: "t3", name: "Survival", desc: "High-concept survival scenarios with moral dilemmas" },
+    { key: "t4", name: "Deep Cuts", desc: "Shares DNA with The Divide but diverges in subgenre" }
+  ];
 
-var BG_MAP = {
-  'compact-sage': 'bg-sage',
-  'compact-rose': 'bg-rose',
-  'compact-stone': 'bg-stone'
-};
+  var TAG_COLORS = ['tag-sage', 'tag-rose', 'tag-lavender', 'tag-stone'];
+  var activeTier = 't1';
 
-function el(tag, attrs, children) {
-  var e = document.createElement(tag);
-  if (attrs) {
-    Object.keys(attrs).forEach(function(k) {
-      if (k === 'className') e.className = attrs[k];
-      else if (k === 'onclick') e.onclick = attrs[k];
-      else e.setAttribute(k, attrs[k]);
-    });
-  }
-  if (typeof children === 'string') e.textContent = children;
-  else if (Array.isArray(children)) children.forEach(function(c) { if (c) e.appendChild(c); });
-  else if (children instanceof Node) e.appendChild(children);
-  return e;
-}
-
-function starsText(r) {
-  var s = '';
-  for (var i = 1; i <= 5; i++) s += i <= Math.round(r) ? '\u2605' : '\u2606';
-  return s;
-}
-
-function streamText(s) {
-  var all = [];
-  s.svod.forEach(function(p) { all.push(p); });
-  s.avod.forEach(function(p) { all.push(p + ' (free)'); });
-  return all.length ? all.join(' \u00b7 ') : 'check availability';
-}
-
-function toggleTile(id) {
-  var d = document.getElementById('det-' + id);
-  if (d) d.classList.toggle('open');
-}
-
-function buildTile(movie, layout) {
-  var mid = movie.id;
-  var isFeatured = layout === 'featured';
-  var isPoster = layout === 'poster';
-  var isCompact = layout.startsWith('compact');
-
-  var tile = document.createElement('div');
-  var classes = 'bento-tile';
-  if (isFeatured) classes += ' wide';
-  if (isCompact && BG_MAP[layout]) classes += ' ' + BG_MAP[layout];
-  tile.className = classes;
-  tile.onclick = function() { toggleTile(mid); };
-
-  var img = document.createElement('img');
-  img.src = movie.poster;
-  img.alt = movie.title;
-  img.loading = 'lazy';
-  img.onerror = function() { this.onerror = null; this.src = movie.fallback; };
-
-  if (isFeatured) {
-    // Wide tile: poster left, text right
-    var inner = el('div', {className:'tile-featured'});
-    var posterCol = el('div', {className:'tile-poster'}, [img]);
-
-    var tagsDiv = el('div', {className:'tile-tags'});
-    movie.genre_tags.slice(0, 2).forEach(function(t) { tagsDiv.appendChild(el('span', {}, t)); });
-
-    var body = el('div', {className:'tile-body'}, [
-      el('div', {}, [
-        el('div', {className:'tile-name'}, movie.title),
-        el('div', {className:'tile-year-dir'}, [
-          el('span', {className:'yr'}, String(movie.year)),
-          document.createTextNode(' \u2014 ' + movie.director)
-        ]),
-        el('div', {className:'tile-rating'}, [
-          el('span', {className:'stars'}, starsText(movie.rating)),
-          document.createTextNode(' ' + movie.rating.toFixed(1))
-        ])
-      ]),
-      el('div', {}, [
-        tagsDiv,
-        el('div', {className:'tile-expand-hint'}, 'Tap for more')
-      ])
-    ]);
-
-    inner.appendChild(posterCol);
-    inner.appendChild(body);
-    tile.appendChild(inner);
-
-  } else if (isPoster) {
-    // Poster-dominant tile with overlay
-    var cell = el('div', {className:'tile-poster-cell'});
-    cell.appendChild(img);
-    var overlay = el('div', {className:'tile-overlay'}, [
-      el('div', {className:'tile-name'}, movie.title),
-      el('div', {className:'tile-year'}, String(movie.year) + ' \u2014 ' + movie.director)
-    ]);
-    cell.appendChild(overlay);
-    tile.appendChild(cell);
-
-  } else {
-    // Compact text tile
-    var compact = el('div', {className:'tile-compact'}, [
-      el('div', {}, [
-        el('div', {className:'tile-name'}, movie.title),
-        el('div', {className:'tile-year-dir'}, [
-          el('span', {className:'yr'}, String(movie.year)),
-          document.createTextNode(' \u2014 ' + movie.director)
-        ]),
-        el('div', {className:'tile-rating'}, [
-          el('span', {className:'stars'}, starsText(movie.rating)),
-          document.createTextNode(' ' + movie.rating.toFixed(1))
-        ])
-      ]),
-      el('div', {className:'tile-expand-hint'}, 'Tap for more')
-    ]);
-    tile.appendChild(compact);
+  // Helpers using safe DOM creation
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      for (var key in attrs) {
+        if (key === 'className') node.className = attrs[key];
+        else if (key === 'textContent') node.textContent = attrs[key];
+        else if (key.indexOf('on') === 0) node.addEventListener(key.slice(2).toLowerCase(), attrs[key]);
+        else node.setAttribute(key, attrs[key]);
+      }
+    }
+    if (children) {
+      if (typeof children === 'string') {
+        node.textContent = children;
+      } else if (Array.isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+          if (children[i]) node.appendChild(children[i]);
+        }
+      } else {
+        node.appendChild(children);
+      }
+    }
+    return node;
   }
 
-  // Details (shared for all types)
-  var dnaWrap = el('div', {className:'dna-wrap'});
-  movie.dna.forEach(function(d) { dnaWrap.appendChild(el('span', {}, d)); });
+  function htmlEl(tag, attrs, htmlContent) {
+    var node = el(tag, attrs);
+    // All htmlContent comes from hardcoded MOVIES data, not user input
+    node.innerHTML = htmlContent;
+    return node;
+  }
 
-  var allTags = el('div', {className:'tile-tags'});
-  movie.genre_tags.forEach(function(t) { allTags.appendChild(el('span', {}, t)); });
+  function ratingHtml(r) {
+    return '<span class="rating"><span class="rating-star">&#9733;</span> ' + r.toFixed(1) + '</span>';
+  }
 
-  var details = el('div', {className:'tile-details', id:'det-' + movie.id}, [
-    el('div', {className:'tile-details-inner'}, [
-      el('div', {className:'dl'}, 'Why this film'),
-      el('div', {className:'dt'}, movie.why),
-      el('div', {className:'divider'}),
-      el('div', {className:'dl'}, 'Streaming'),
-      el('div', {className:'dt'}, streamText(movie.streaming)),
-      el('div', {className:'dl'}, 'All tags'),
-      allTags,
-      el('div', {className:'dl'}, 'DNA'),
-      dnaWrap
-    ])
-  ]);
-  tile.appendChild(details);
-
-  return tile;
-}
-
-function render() {
-  var main = document.getElementById('main');
-
-  TIERS.forEach(function(tier) {
-    var section = el('section', {className:'tier-section', id:tier.id});
-
-    var label = el('div', {className:'tier-label'}, [
-      el('span', {className:'num'}, tier.num),
-      el('span', {className:'title'}, tier.label),
-      el('span', {className:'count'}, String(tier.count) + ' films')
-    ]);
-    section.appendChild(label);
-    section.appendChild(el('p', {className:'tier-desc'}, tier.desc));
-
-    var grid = el('div', {className:'bento-grid'});
-    var tierMovies = MOVIES.filter(function(m) { return m.tier === tier.key; });
-    var layouts = LAYOUTS[tier.key];
-
-    tierMovies.forEach(function(movie, i) {
-      var layout = layouts[i] || 'poster';
-      grid.appendChild(buildTile(movie, layout));
+  function createPosterImg(m, loading) {
+    var img = el('img', {
+      className: 'tile-poster-img',
+      src: m.poster,
+      alt: m.title,
+      loading: loading || 'lazy'
     });
+    img.onerror = function() { this.onerror = null; this.src = m.fallback; };
+    return img;
+  }
+
+  function createStreamPills(m) {
+    var all = m.svod.concat(m.avod);
+    if (!all.length) return null;
+    var row = el('div', {className: 'streaming-row'});
+    for (var i = 0; i < Math.min(all.length, 3); i++) {
+      row.appendChild(el('span', {className: 'stream-pill'}, all[i]));
+    }
+    return row;
+  }
+
+  function createMetaHtml(parts) {
+    // Uses hardcoded static content only (years, ratings, director names from our MOVIES array)
+    return parts.join('<span class="meta-dot">&middot;</span>');
+  }
+
+  function createHeroTile(m) {
+    var tile = el('div', {className: 'tile tile-hero', 'data-id': m.id});
+
+    var poster = el('div', {className: 'tile-poster'});
+    poster.appendChild(el('span', {className: 'featured-badge'}, 'Top Pick'));
+    poster.appendChild(createPosterImg(m, 'eager'));
+    poster.appendChild(el('div', {className: 'tile-poster-overlay'}));
+    tile.appendChild(poster);
+
+    var body = el('div', {className: 'tile-body'});
+    body.appendChild(el('div', {className: 'tile-title'}, m.title));
+    var meta = htmlEl('div', {className: 'tile-meta'},
+      '<span>' + m.year + '</span>' +
+      '<span class="meta-dot">&middot;</span>' +
+      ratingHtml(m.rating) +
+      '<span class="meta-dot">&middot;</span>' +
+      '<span>' + m.director + '</span>'
+    );
+    body.appendChild(meta);
+    var pills = createStreamPills(m);
+    if (pills) body.appendChild(pills);
+    tile.appendChild(body);
+
+    return tile;
+  }
+
+  function createStdTile(m) {
+    var tile = el('div', {className: 'tile tile-std', 'data-id': m.id});
+
+    var poster = el('div', {className: 'tile-poster'});
+    poster.appendChild(createPosterImg(m));
+    tile.appendChild(poster);
+
+    var body = el('div', {className: 'tile-body'});
+    body.appendChild(el('div', {className: 'tile-title'}, m.title));
+    var meta = htmlEl('div', {className: 'tile-meta'},
+      '<span>' + m.year + '</span>' +
+      '<span class="meta-dot">&middot;</span>' +
+      ratingHtml(m.rating)
+    );
+    body.appendChild(meta);
+    var pills = createStreamPills(m);
+    if (pills) body.appendChild(pills);
+    tile.appendChild(body);
+
+    return tile;
+  }
+
+  function createWideTile(m) {
+    var tile = el('div', {className: 'tile tile-wide', 'data-id': m.id});
+
+    var poster = el('div', {className: 'tile-poster'});
+    poster.appendChild(createPosterImg(m));
+    tile.appendChild(poster);
+
+    var body = el('div', {className: 'tile-body'});
+    body.appendChild(el('div', {className: 'tile-title'}, m.title));
+    var meta = htmlEl('div', {className: 'tile-meta'},
+      '<span>' + m.year + '</span>' +
+      '<span class="meta-dot">&middot;</span>' +
+      ratingHtml(m.rating)
+    );
+    body.appendChild(meta);
+    body.appendChild(el('div', {className: 'tile-snippet'}, m.why));
+    var pills = createStreamPills(m);
+    if (pills) body.appendChild(pills);
+    tile.appendChild(body);
+
+    return tile;
+  }
+
+  function createCompactTile(m) {
+    var tile = el('div', {className: 'tile tile-compact', 'data-id': m.id});
+
+    var poster = el('div', {className: 'tile-poster'});
+    poster.appendChild(createPosterImg(m));
+    tile.appendChild(poster);
+
+    var info = el('div', {style: 'min-width:0'});
+    info.appendChild(el('div', {className: 'tile-title'}, m.title));
+    var meta = htmlEl('div', {className: 'tile-meta'},
+      '<span>' + m.year + '</span>' +
+      '<span class="meta-dot">&middot;</span>' +
+      ratingHtml(m.rating) +
+      '<span class="meta-dot">&middot;</span>' +
+      '<span style="color:var(--text-muted)">' + m.director.split(',')[0] + '</span>'
+    );
+    info.appendChild(meta);
+    tile.appendChild(info);
+
+    var arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('class', 'tile-arrow');
+    arrow.setAttribute('viewBox', '0 0 24 24');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M9 18l6-6-6-6');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linecap', 'round');
+    arrow.appendChild(path);
+    tile.appendChild(arrow);
+
+    return tile;
+  }
+
+  function renderNav() {
+    var nav = document.getElementById('tierNav');
+    while (nav.firstChild) nav.removeChild(nav.firstChild);
+
+    for (var i = 0; i < TIERS.length; i++) {
+      var t = TIERS[i];
+      var count = 0;
+      for (var j = 0; j < MOVIES.length; j++) {
+        if (MOVIES[j].tier === t.key) count++;
+      }
+      var btn = el('button', {
+        className: 'tier-pill' + (t.key === activeTier ? ' active' : ''),
+        'data-tier': t.key
+      });
+      btn.appendChild(document.createTextNode(t.name));
+      var countSpan = el('span', {className: 'tier-count'}, String(count));
+      btn.appendChild(countSpan);
+      btn.addEventListener('click', handlePillClick);
+      nav.appendChild(btn);
+    }
+  }
+
+  function handlePillClick(e) {
+    activeTier = e.currentTarget.getAttribute('data-tier');
+    renderNav();
+    renderGrid();
+  }
+
+  function renderGrid() {
+    var app = document.getElementById('app');
+    while (app.firstChild) app.removeChild(app.firstChild);
+
+    var tier = null;
+    for (var i = 0; i < TIERS.length; i++) {
+      if (TIERS[i].key === activeTier) { tier = TIERS[i]; break; }
+    }
+    var movies = [];
+    for (var j = 0; j < MOVIES.length; j++) {
+      if (MOVIES[j].tier === activeTier) movies.push(MOVIES[j]);
+    }
+
+    var section = el('section', {className: 'tier-section active'});
+    section.appendChild(el('div', {className: 'tier-intro'}, tier.desc));
+
+    var grid = el('div', {className: 'bento-grid grid-' + activeTier});
+
+    for (var k = 0; k < movies.length; k++) {
+      var m = movies[k];
+      var tile;
+
+      if (activeTier === 't1') {
+        tile = k === 0 ? createHeroTile(m) : createStdTile(m);
+      } else if (activeTier === 't2') {
+        tile = (k === 0 || k === 3) ? createWideTile(m) : createStdTile(m);
+      } else if (activeTier === 't3') {
+        tile = (k === 0 || k === 4) ? createWideTile(m) : createStdTile(m);
+      } else {
+        tile = createCompactTile(m);
+      }
+
+      tile.addEventListener('click', handleTileClick);
+      grid.appendChild(tile);
+    }
 
     section.appendChild(grid);
-    main.appendChild(section);
-  });
-}
+    app.appendChild(section);
 
-function observeTiles() {
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry, i) {
-      if (entry.isIntersecting) {
-        // Stagger delay based on position in viewport batch
-        var delay = (Array.prototype.indexOf.call(entry.target.parentNode.children, entry.target)) * 80;
-        setTimeout(function() {
-          entry.target.classList.add('visible');
-        }, delay);
+    // Staggered reveal
+    requestAnimationFrame(function() {
+      var tiles = app.querySelectorAll('.tile');
+      for (var t = 0; t < tiles.length; t++) {
+        (function(tile, delay) {
+          setTimeout(function() { tile.classList.add('revealed'); }, delay);
+        })(tiles[t], t * 80);
       }
     });
-  }, { threshold: 0.05 });
-  document.querySelectorAll('.bento-tile').forEach(function(t) { observer.observe(t); });
-}
+  }
 
-render();
-observeTiles();
+  function handleTileClick(e) {
+    var tileEl = e.currentTarget;
+    var id = parseInt(tileEl.getAttribute('data-id'), 10);
+    openModal(id);
+  }
+
+  function openModal(id) {
+    var m = null;
+    for (var i = 0; i < MOVIES.length; i++) {
+      if (MOVIES[i].id === id) { m = MOVIES[i]; break; }
+    }
+    if (!m) return;
+
+    var modal = document.getElementById('modal');
+    var posterEl = document.getElementById('modalPoster');
+    var body = document.getElementById('modalBody');
+
+    posterEl.src = m.poster;
+    posterEl.alt = m.title;
+    posterEl.onerror = function() { this.onerror = null; this.src = m.fallback; };
+
+    // Build modal body with DOM methods
+    while (body.firstChild) body.removeChild(body.firstChild);
+
+    body.appendChild(el('div', {className: 'modal-title'}, m.title));
+
+    var meta = htmlEl('div', {className: 'modal-meta'},
+      '<span>' + m.year + '</span>' +
+      '<span class="meta-dot">&middot;</span>' +
+      ratingHtml(m.rating)
+    );
+    body.appendChild(meta);
+
+    body.appendChild(el('div', {className: 'modal-director'}, 'Directed by ' + m.director));
+    body.appendChild(el('div', {className: 'modal-section-label'}, 'Why this pick'));
+    body.appendChild(el('div', {className: 'modal-why'}, m.why));
+    body.appendChild(el('div', {className: 'modal-section-label'}, 'Genre DNA'));
+
+    var tagsDiv = el('div', {className: 'modal-tags'});
+    for (var i = 0; i < m.tags.length; i++) {
+      tagsDiv.appendChild(el('span', {className: 'modal-tag ' + TAG_COLORS[i % TAG_COLORS.length]}, m.tags[i]));
+    }
+    body.appendChild(tagsDiv);
+
+    var allStreaming = m.svod.concat(m.avod);
+    if (allStreaming.length) {
+      body.appendChild(el('div', {className: 'modal-section-label'}, 'Watch on'));
+      var streamDiv = el('div', {className: 'modal-streaming'});
+      for (var s = 0; s < allStreaming.length; s++) {
+        streamDiv.appendChild(el('span', {className: 'modal-stream-badge'}, allStreaming[s]));
+      }
+      body.appendChild(streamDiv);
+    } else {
+      body.appendChild(el('div', {className: 'modal-section-label', style: 'color:var(--soft-rose)'}, 'Not currently streaming'));
+    }
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === e.currentTarget) closeModal();
+  });
+
+  // Swipe down to dismiss
+  var touchStartY = 0;
+  document.getElementById('modalSheet').addEventListener('touchstart', function(e) {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.getElementById('modalSheet').addEventListener('touchmove', function(e) {
+    if (e.touches[0].clientY - touchStartY > 80) closeModal();
+  }, { passive: true });
+
+  // Scroll progress bar
+  window.addEventListener('scroll', function() {
+    var scrollTop = document.documentElement.scrollTop;
+    var scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+  }, { passive: true });
+
+  // Init
+  renderNav();
+  renderGrid();
+})();
 </script>
 </body>
 </html>
