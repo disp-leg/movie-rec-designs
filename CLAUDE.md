@@ -45,22 +45,23 @@ When spawning agent teams for short tasks (<15 min), include the content of `~/.
 - [VERIFIED] editucation.io is a Framer site using SF Pro Display + Plus Jakarta Sans fonts
 - [UNVERIFIED] All 20 TMDB poster paths resolve correctly (agents have onerror fallbacks to Amazon images)
 
-## Progress
+## Progress — COMPLETE
 
-### Tranche 1+2 Status (Options 1-6)
-- **Option 1** (Editorial Magazine) — DONE, pushed. Playfair Display + Inter, burgundy accent, parallax hero.
-- **Option 2** (Brutalist) — DONE, pushed. Space Mono, black/white/red, ticker tape, glitch effects.
-- **Option 3** (Glassmorphism) — IN PROGRESS (designer-alpha-3)
-- **Option 4** (Retro Analog/VHS) — DONE, pushed. Press Start 2P + VT323, CRT scan lines, tracking bars.
-- **Option 5** (Swiss Minimalist) — DONE, pushed. Inter, grid-obsessed, Swiss red accent, scroll progress.
-- **Option 6** (Japanese Zen) — IN PROGRESS (designer-alpha-2)
+All 11 design options built and pushed to GitHub Pages: https://disp-leg.github.io/movie-rec-designs/
 
-### Remaining (Options 7-11)
-- Option 7: Editucation.io clone — queued
-- Option 8: Warm Bento Grid — queued
-- Option 9: Cinematic Full-Bleed — queued
-- Option 10: Vinyl Record Metaphor — queued
-- Option 11: Film Strip/Reel — queued
+| # | Aesthetic | Fonts | Palette | Key Feature |
+|---|-----------|-------|---------|-------------|
+| 1 | Editorial Magazine | Playfair Display + Inter | Off-white, charcoal, burgundy | Parallax hero, pull quotes, bookmark micro-interaction |
+| 2 | Brutalist | Space Mono + Inter | Black, white, red only | Ticker tape, glitch hover, step-start timing |
+| 3 | Glassmorphism (Warm) | DM Sans | Forest green, cream/rose glass | Frosted panels, floating particles, parallax orbs |
+| 4 | Retro Analog/VHS | Press Start 2P + VT323 | Phosphor green, amber, charcoal | CRT boot sequence, scan lines, typed text reveal |
+| 5 | Swiss Minimalist | Inter | Black, white, Swiss red | Visible grid, sticky headers, sort/filter controls |
+| 6 | Japanese Zen | Cormorant Garamond + Inter | Stone, moss, clay, paper | Extreme whitespace, drifting petals, ink-fade animations |
+| 7 | Editucation.io Clone | Inter + Plus Jakarta Sans | Dark + red accent | Exact branding match, Framer-style sections, FAQ accordion |
+| 8 | Warm Bento Grid | Plus Jakarta Sans | Sage, cream, rose, stone | Varied tile sizes, staggered reveals, pill navigation |
+| 9 | Cinematic Full-Bleed | Bebas Neue + Inter | Deep blacks, color grading | Scroll-snap full-viewport, letterboxing, progress dots |
+| 10 | Vinyl Record | Space Grotesk + DM Sans | Cream, brown, dusty gold | Spinning discs, crate browsing, sleeve pull-outs |
+| 11 | Film Strip/Reel | Courier Prime + Inter | Amber celluloid, dark leader | Sprocket holes, contact sheets, projector flicker |
 
 ## Approval Scope
 
