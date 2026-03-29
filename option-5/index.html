@@ -4,37 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>REEL — Film Index</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --black: #000000;
-  --white: #FFFFFF;
-  --gray-50: #FAFAFA;
-  --gray-100: #F2F2F2;
-  --gray-200: #E5E5E5;
+  --white: #FAFAFA;
+  --black: #111111;
+  --gray-100: #F0F0F0;
+  --gray-200: #E0E0E0;
   --gray-300: #CCCCCC;
   --gray-400: #999999;
-  --gray-500: #777777;
-  --gray-600: #555555;
-  --gray-800: #222222;
-  --red: #E02020;
-  --sans: 'Inter', Helvetica Neue, Helvetica, Arial, sans-serif;
-  --grid-margin: 20px;
-  --grid-gutter: 12px;
+  --gray-500: #888888;
+  --gray-600: #666666;
+  --gray-700: #444444;
+  --red: #E30613;
+  --sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --col-margin: 16px;
+  --col-gutter: 8px;
 }
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
-}
+html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
 
 body {
   background: var(--white);
@@ -44,12 +34,34 @@ body {
   margin: 0 auto;
   overflow-x: hidden;
   min-height: 100vh;
+  position: relative;
 }
 
-/* ── NAV ── */
-nav {
+/* ── SCROLL PROGRESS ── */
+#scrollProgress {
   position: fixed;
   top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 2px;
+  background: transparent;
+  z-index: 200;
+  pointer-events: none;
+}
+
+#scrollProgressBar {
+  height: 100%;
+  width: 0%;
+  background: var(--red);
+  transition: width 0.05s linear;
+}
+
+/* ── HEADER ── */
+header {
+  position: fixed;
+  top: 2px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -57,654 +69,442 @@ nav {
   z-index: 100;
   background: var(--white);
   border-bottom: 1px solid var(--black);
-  transition: background 0.2s;
 }
 
-.nav-top {
+.header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px var(--grid-margin);
-  border-bottom: 1px solid var(--gray-200);
+  align-items: baseline;
+  padding: 10px var(--col-margin) 8px;
 }
 
-.nav-logo {
-  font-family: var(--sans);
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 0.25em;
+.header-logo {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.nav-logo em {
-  font-style: normal;
-  color: var(--red);
-}
+.header-logo em { font-style: normal; color: var(--red); }
 
-.nav-meta {
-  font-size: 9px;
+.header-meta {
+  font-size: 8px;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gray-500);
 }
 
-.nav-bottom {
+/* ── FILTER BAR ── */
+.filter-bar {
   display: flex;
-  gap: 0;
-  padding: 0 var(--grid-margin);
+  padding: 0;
+  border-top: 1px solid var(--gray-200);
 }
 
-.nav-tab {
+.filter-btn {
   flex: 1;
   text-align: center;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 8px 0;
-  color: var(--gray-400);
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.nav-tab.active {
-  color: var(--black);
-  border-bottom-color: var(--red);
-}
-
-/* ── HERO ── */
-.hero {
-  margin-top: 82px;
-  position: relative;
-  border-bottom: 1px solid var(--black);
-}
-
-.hero-image-wrap {
-  width: 100%;
-  height: 380px;
-  overflow: hidden;
-  position: relative;
-}
-
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.05);
-  transition: transform 0.1s linear;
-  filter: grayscale(30%) contrast(1.05);
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0) 50%,
-    rgba(0,0,0,0.7) 100%
-  );
-}
-
-.hero-badge {
-  position: absolute;
-  top: 16px;
-  left: var(--grid-margin);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  background: var(--red);
-  color: var(--white);
-  padding: 4px 8px;
-}
-
-.hero-info {
-  padding: 16px var(--grid-margin) 20px;
-  border-bottom: 1px solid var(--gray-200);
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: start;
-}
-
-.hero-title {
-  font-size: 28px;
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-}
-
-.hero-rating-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border: 2px solid var(--black);
-}
-
-.hero-rating-num {
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.hero-rating-label {
-  font-size: 6px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gray-500);
-}
-
-.hero-details {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  margin-top: 12px;
-  border-top: 1px solid var(--gray-200);
-  padding-top: 12px;
-}
-
-.hero-detail {
-  position: relative;
-}
-
-.hero-detail:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--gray-200);
-}
-
-.hero-detail-label {
+  font-family: var(--sans);
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gray-400);
-  margin-bottom: 2px;
-}
-
-.hero-detail-value {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.hero-blurb {
-  padding: 12px var(--grid-margin) 16px;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray-600);
-  border-bottom: 1px solid var(--gray-200);
-}
-
-.hero-streaming {
-  display: flex;
-  gap: 0;
-  padding: 0 var(--grid-margin);
-}
-
-.hero-stream-item {
-  flex: 1;
-  text-align: center;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 8px 0;
-  color: var(--gray-600);
+  padding: 7px 4px;
+  background: none;
+  border: none;
   border-right: 1px solid var(--gray-200);
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  position: relative;
 }
 
-.hero-stream-item:last-child {
-  border-right: none;
+.filter-btn:last-child { border-right: none; }
+
+.filter-btn.active {
+  color: var(--black);
+  background: var(--gray-100);
 }
 
-/* ── SECTION HEADER ── */
-.section-head {
-  padding: 32px var(--grid-margin) 0;
+.filter-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--red);
+}
+
+/* ── CONTENT AREA ── */
+main { margin-top: 72px; }
+
+/* ── STICKY TIER HEADER ── */
+.tier-header {
+  position: sticky;
+  top: 72px;
+  z-index: 50;
+  background: var(--white);
   border-bottom: 2px solid var(--black);
-  margin-bottom: 0;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  padding: 0 var(--col-margin);
+  transition: padding 0.2s;
 }
 
-.section-head.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.section-head-grid {
+.tier-header-inner {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: end;
-  padding-bottom: 10px;
+  grid-template-columns: 40px 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 14px 0 8px;
+  transition: padding 0.2s;
 }
 
-.section-num {
-  font-size: 48px;
-  font-weight: 900;
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  color: var(--gray-200);
+.tier-header.compact .tier-header-inner {
+  padding: 6px 0 5px;
 }
 
-.section-label {
-  font-size: 10px;
+.tier-num {
+  font-size: 32px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--gray-300);
+  transition: font-size 0.2s, color 0.2s;
+}
+
+.tier-header.compact .tier-num {
+  font-size: 16px;
+  color: var(--gray-400);
+}
+
+.tier-label {
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding-bottom: 4px;
+  align-self: end;
+  padding-bottom: 2px;
 }
 
-.section-sublabel {
-  font-size: 10px;
+.tier-sublabel {
+  display: block;
+  font-size: 9px;
   font-weight: 400;
-  color: var(--gray-500);
-  margin-top: 2px;
   letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--gray-500);
+  margin-top: 1px;
 }
 
-/* ── FILM ROW — primary layout ── */
-.film-row {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 0;
+.tier-header.compact .tier-sublabel { display: none; }
+
+.tier-count {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  align-self: end;
+  padding-bottom: 3px;
+}
+
+/* ── FILM ENTRY ── */
+.film-entry {
   border-bottom: 1px solid var(--gray-200);
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  cursor: pointer;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
-.film-row.visible {
+.film-entry.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.film-row:active {
-  background: var(--gray-50);
+.film-entry:last-child { border-bottom: 1px solid var(--black); }
+
+.film-summary {
+  display: grid;
+  grid-template-columns: 64px 1fr 36px;
+  gap: 0;
+  cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.film-row:last-child {
-  border-bottom: 1px solid var(--black);
-}
+.film-summary:active { background: var(--gray-100); }
 
-.film-row-poster {
-  width: 100px;
+.film-poster-cell {
+  width: 64px;
   aspect-ratio: 2/3;
   overflow: hidden;
   border-right: 1px solid var(--gray-200);
 }
 
-.film-row-poster img {
+.film-poster-cell img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  filter: grayscale(20%);
-  transition: filter 0.3s, transform 0.4s cubic-bezier(0.25,0,0.25,1);
+  filter: grayscale(25%);
+  transition: filter 0.3s;
 }
 
-.film-row:active .film-row-poster img {
+.film-entry.expanded .film-poster-cell img,
+.film-summary:active .film-poster-cell img {
   filter: grayscale(0%);
-  transform: scale(1.05);
 }
 
-.film-row-info {
-  padding: 12px 14px;
+.film-info-cell {
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 0;
+  justify-content: center;
+  min-width: 0;
 }
 
-.film-row-top {
+.film-title-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: baseline;
+  gap: 6px;
 }
 
-.film-row-title {
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-}
-
-.film-row-rating {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 13px;
+.film-title {
+  font-size: 12px;
   font-weight: 700;
-  flex-shrink: 0;
-  padding-top: 1px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
 }
 
-.film-row-rating .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--red);
-}
+.film-entry.expanded .film-title { color: var(--red); }
 
-.film-row-meta {
+.film-year {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 300;
   color: var(--gray-500);
-  margin-top: 3px;
-  letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
 
-.film-row-tags {
+.film-meta-row {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--gray-500);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.film-tags-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 3px;
+  margin-top: 4px;
+  overflow: hidden;
 }
 
-.tag {
-  font-size: 8px;
+.film-tag {
+  font-size: 7px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border: 1px solid var(--gray-300);
   color: var(--gray-600);
-  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
 }
 
-.film-row:active .tag {
+.film-entry.expanded .film-tag {
   border-color: var(--red);
   color: var(--red);
 }
 
-.film-row-blurb {
+.film-rating-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--gray-200);
+  padding: 0 2px;
+}
+
+.film-rating-num {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.film-rating-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--red);
+  margin-top: 3px;
+}
+
+/* ── EXPANDABLE DETAIL ── */
+.film-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.25, 0, 0.25, 1);
+  border-top: 0 solid var(--gray-200);
+}
+
+.film-entry.expanded .film-detail {
+  max-height: 400px;
+  border-top-width: 1px;
+}
+
+.film-detail-inner {
+  padding: 12px var(--col-margin) 16px;
+}
+
+.film-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 10px;
+}
+
+.detail-field {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.detail-field:nth-child(odd) { padding-right: 8px; border-right: 1px solid var(--gray-200); }
+.detail-field:nth-child(even) { padding-left: 8px; }
+
+.detail-label {
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 1px;
+}
+
+.detail-value {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.film-detail-blurb {
   font-size: 11px;
   font-weight: 400;
-  line-height: 1.5;
-  color: var(--gray-500);
-  margin-top: 6px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.6;
+  color: var(--gray-600);
+  margin-bottom: 10px;
 }
 
-.film-row-bottom {
+.film-detail-streaming {
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 4px;
 }
 
-.stream-tag {
+.stream-badge {
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 2px 6px;
-  background: var(--gray-100);
+  padding: 3px 8px;
+  background: var(--black);
+  color: var(--white);
+}
+
+.stream-badge--free {
+  background: none;
+  border: 1px solid var(--gray-300);
   color: var(--gray-600);
 }
 
-/* ── FILM GRID — dual column layout ── */
-.film-grid {
+/* ── DATA SUMMARY ── */
+.data-summary {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--black);
-}
-
-.film-grid-item {
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 2px solid var(--black);
   border-bottom: 1px solid var(--gray-200);
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  cursor: pointer;
+  transition: opacity 0.5s;
 }
 
-.film-grid-item.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.data-summary.visible { opacity: 1; }
 
-.film-grid-item:nth-child(odd) {
-  border-right: 1px solid var(--gray-200);
-}
-
-.film-grid-item:active {
-  background: var(--gray-50);
-}
-
-.film-grid-poster {
-  width: 100%;
-  aspect-ratio: 3/4;
-  overflow: hidden;
-  border-bottom: 1px solid var(--gray-200);
-}
-
-.film-grid-poster img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  filter: grayscale(20%);
-  transition: filter 0.3s, transform 0.4s cubic-bezier(0.25,0,0.25,1);
-}
-
-.film-grid-item:active .film-grid-poster img {
-  filter: grayscale(0%);
-  transform: scale(1.05);
-}
-
-.film-grid-info {
-  padding: 10px 12px 14px;
-}
-
-.film-grid-title {
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
-.film-grid-meta {
-  font-size: 9px;
-  font-weight: 500;
-  color: var(--gray-500);
-  margin-bottom: 6px;
-}
-
-.film-grid-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.film-grid-rating .dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--red);
-}
-
-.film-grid-streaming {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-
-.film-grid-streaming .stream-tag {
-  font-size: 7px;
-  padding: 2px 5px;
-}
-
-/* ── STAT BANNER ── */
-.stat-banner {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border-bottom: 1px solid var(--black);
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
-}
-
-.stat-banner.visible {
-  opacity: 1;
-}
-
-.stat-item {
+.data-cell {
   text-align: center;
-  padding: 16px 8px;
+  padding: 14px 4px;
   border-right: 1px solid var(--gray-200);
 }
 
-.stat-item:last-child {
-  border-right: none;
-}
+.data-cell:last-child { border-right: none; }
 
-.stat-num {
-  font-size: 28px;
-  font-weight: 900;
+.data-num {
+  font-size: 22px;
+  font-weight: 200;
   letter-spacing: -0.03em;
   line-height: 1;
 }
 
-.stat-label {
-  font-size: 8px;
+.data-label {
+  font-size: 7px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gray-400);
   margin-top: 4px;
 }
 
-/* ── INDEX LIST — compact ── */
-.index-list {
-  border-bottom: 1px solid var(--black);
-}
-
-.index-item {
-  display: grid;
-  grid-template-columns: 28px 1fr auto;
-  gap: 0;
-  align-items: center;
-  padding: 10px var(--grid-margin);
-  border-bottom: 1px solid var(--gray-200);
-  opacity: 0;
-  transform: translateX(-12px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-  cursor: pointer;
-}
-
-.index-item.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.index-item:active {
-  background: var(--gray-50);
-}
-
-.index-item:last-child {
-  border-bottom: none;
-}
-
-.index-num {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--gray-300);
-  letter-spacing: -0.02em;
-}
-
-.index-title-wrap {
-  padding-left: 8px;
-}
-
-.index-title {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.index-meta {
-  font-size: 9px;
-  font-weight: 400;
-  color: var(--gray-500);
-  margin-top: 1px;
-}
-
-.index-rating {
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.index-rating .dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--red);
-}
-
 /* ── FOOTER ── */
 footer {
-  padding: 28px var(--grid-margin) 40px;
-  border-top: 2px solid var(--black);
+  padding: 20px var(--col-margin) 36px;
   text-align: center;
 }
 
 .footer-logo {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.25em;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  margin-bottom: 6px;
 }
 
-.footer-logo em {
-  font-style: normal;
-  color: var(--red);
-}
+.footer-logo em { font-style: normal; color: var(--red); }
 
 .footer-sub {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 400;
   color: var(--gray-400);
-  letter-spacing: 0.06em;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
 }
 
-.footer-count {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gray-400);
-  margin-top: 12px;
+/* ── GRID LINES (visible system) ── */
+.grid-lines {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 0 var(--col-margin);
+  gap: 0;
+  opacity: 0.35;
 }
+
+.grid-line {
+  border-right: 1px solid var(--gray-200);
+}
+
+.grid-line:last-child { border-right: none; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { display: none; }
@@ -713,524 +513,900 @@ body { -ms-overflow-style: none; scrollbar-width: none; }
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-top">
-    <div class="nav-logo">R<em>E</em>EL</div>
-    <div class="nav-meta">Film Index — 2026</div>
-  </div>
-  <div class="nav-bottom">
-    <div class="nav-tab active">All Films</div>
-    <div class="nav-tab">By Rating</div>
-    <div class="nav-tab">Streaming</div>
-  </div>
-</nav>
-
-<!-- HERO: It Comes at Night -->
-<section class="hero">
-  <div class="hero-image-wrap">
-    <img class="hero-image" id="heroImg"
-      src="https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'"
-      alt="It Comes at Night">
-    <div class="hero-overlay"></div>
-    <div class="hero-badge">Featured</div>
-  </div>
-  <div class="hero-info">
-    <div class="hero-grid">
-      <h1 class="hero-title">It Comes<br>at Night</h1>
-      <div class="hero-rating-box">
-        <span class="hero-rating-num">3.1</span>
-        <span class="hero-rating-label">LB</span>
-      </div>
-    </div>
-    <div class="hero-details">
-      <div class="hero-detail">
-        <div class="hero-detail-label">Director</div>
-        <div class="hero-detail-value">Trey Edward Shults</div>
-      </div>
-      <div class="hero-detail" style="padding-left:12px">
-        <div class="hero-detail-label">Year</div>
-        <div class="hero-detail-value">2017</div>
-      </div>
-      <div class="hero-detail" style="padding-left:12px">
-        <div class="hero-detail-label">Tier</div>
-        <div class="hero-detail-value">Direct Match</div>
-      </div>
-    </div>
-  </div>
-  <div class="hero-blurb">Family boarded up in a house during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence. The quintessential 'who can you trust in the apocalypse' film.</div>
-  <div class="hero-streaming">
-    <div class="hero-stream-item">Netflix</div>
-    <div class="hero-stream-item">Amazon Prime</div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div class="stat-banner anim-target">
-  <div class="stat-item">
-    <div class="stat-num">20</div>
-    <div class="stat-label">Films Curated</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">4</div>
-    <div class="stat-label">Tiers</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">3.0</div>
-    <div class="stat-label">Avg Rating</div>
-  </div>
+<!-- VISIBLE GRID LINES -->
+<div class="grid-lines">
+  <div class="grid-line"></div>
+  <div class="grid-line"></div>
+  <div class="grid-line"></div>
+  <div class="grid-line"></div>
+  <div class="grid-line"></div>
+  <div class="grid-line"></div>
 </div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scrollProgress"><div id="scrollProgressBar"></div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-row">
+    <div class="header-logo">R<em>E</em>EL</div>
+    <div class="header-meta">Film Index No. 01 — 2026</div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-sort="default">All Films</button>
+    <button class="filter-btn" data-sort="rating">By Rating</button>
+    <button class="filter-btn" data-sort="year">By Year</button>
+    <button class="filter-btn" data-sort="alpha">A — Z</button>
+  </div>
+</header>
+
+<main id="mainContent">
 
 <!-- ═══ TIER 1 ═══ -->
-<div class="section-head anim-target">
-  <div class="section-head-grid">
-    <div class="section-num">01</div>
-    <div>
-      <div class="section-label">Direct Matches</div>
-      <div class="section-sublabel">Closest in tone and psychological intensity</div>
-    </div>
+<div class="tier-header" data-tier="1">
+  <div class="tier-header-inner">
+    <div class="tier-num">01</div>
+    <div class="tier-label">Direct Matches<span class="tier-sublabel">Closest in tone, setting, and psychological intensity</span></div>
+    <div class="tier-count">5 Films</div>
   </div>
 </div>
 
-<!-- Right at Your Door — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg'"
-      alt="Right at Your Door">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Right at Your Door</div>
-        <div class="film-row-rating"><span class="dot"></span>3.1</div>
-      </div>
-      <div class="film-row-meta">Chris Gorak — 2006</div>
-      <div class="film-row-tags">
-        <span class="tag">Post-Apocalyptic</span>
-        <span class="tag">Thriller</span>
-        <span class="tag">Dirty Bomb</span>
-      </div>
-      <div class="film-row-blurb">Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Paranoia escalates in a sealed space with dwindling trust.</div>
-    </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Tubi</span>
-      <span class="stream-tag">Pluto TV</span>
-    </div>
-  </div>
-</div>
+<div class="tier-content" data-tier="1">
 
-<!-- Hidden — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg'"
-      alt="Hidden">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Hidden</div>
-        <div class="film-row-rating"><span class="dot"></span>3.1</div>
+  <div class="film-entry anim-target" data-id="1" data-title="Right at Your Door" data-year="2006" data-rating="3.1" data-tier="1">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/gE5lG86VHngVCvIg6Y0h4cpMDwG.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTI3NTk3MTk1NF5BMl5BanBnXkFtZTcwNzY3NTIzMQ@@._V1_.jpg'" alt="Right at Your Door">
       </div>
-      <div class="film-row-meta">Matt Duffer, Ross Duffer — 2015</div>
-      <div class="film-row-tags">
-        <span class="tag">Post-Apocalyptic</span>
-        <span class="tag">Bunker</span>
-        <span class="tag">Survival</span>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Right at Your Door</span>
+          <span class="film-year">2006</span>
+        </div>
+        <div class="film-meta-row">Chris Gorak</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Post-Apocalyptic</span>
+          <span class="film-tag">Thriller</span>
+          <span class="film-tag">Dirty Bomb</span>
+        </div>
       </div>
-      <div class="film-row-blurb">Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending.</div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.1</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Netflix</span>
-      <span class="stream-tag">Amazon Prime</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Chris Gorak</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2006</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.1 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Direct Match</div></div>
+        </div>
+        <p class="film-detail-blurb">Dirty bomb hits LA; husband seals himself inside the house while wife is outside. Same claustrophobic domestic apocalypse tension as The Divide. Paranoia escalates in a sealed space with dwindling trust.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Tubi</span>
+          <span class="stream-badge stream-badge--free">Pluto TV</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Carriers — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg'"
-      alt="Carriers">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Carriers</div>
-        <div class="film-row-rating"><span class="dot"></span>2.8</div>
+  <div class="film-entry anim-target" data-id="2" data-title="Hidden" data-year="2015" data-rating="3.1" data-tier="1">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/zFxEFfFV0iB3oqOukzBUmCnPNMi.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQ2NjA5MTA3NF5BMl5BanBnXkFtZTgwNDk1NTg0NTE@._V1_.jpg'" alt="Hidden">
       </div>
-      <div class="film-row-meta">Alex Pastor, David Pastor — 2009</div>
-      <div class="film-row-tags">
-        <span class="tag">Pandemic</span>
-        <span class="tag">Road Movie</span>
-        <span class="tag">Survival</span>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Hidden</span>
+          <span class="film-year">2015</span>
+        </div>
+        <div class="film-meta-row">Matt Duffer, Ross Duffer</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Post-Apocalyptic</span>
+          <span class="film-tag">Bunker</span>
+          <span class="film-tag">Survival</span>
+        </div>
       </div>
-      <div class="film-row-blurb">Four survivors navigate a pandemic wasteland with strict rules to avoid infection. Moral decay under survival pressure.</div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.1</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Amazon Prime</span>
-      <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Matt Duffer, Ross Duffer</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2015</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.1 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Direct Match</div></div>
+        </div>
+        <p class="film-detail-blurb">Family hiding in a bunker after an outbreak. Pre-Stranger Things Duffer Brothers. Claustrophobic survival with a twist ending. Same shelter-in-place dread.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+          <span class="stream-badge">Amazon Prime</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Await Further Instructions — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg'"
-      alt="Await Further Instructions">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Await Further Instructions</div>
-        <div class="film-row-rating"><span class="dot"></span>2.5</div>
+  <div class="film-entry anim-target" data-id="3" data-title="Carriers" data-year="2009" data-rating="2.8" data-tier="1">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/j8tEXLMhvhMmbxAEKFCCS3yXnqT.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTU2NjkwNDMxNV5BMl5BanBnXkFtZTcwMTI4MzIyMg@@._V1_.jpg'" alt="Carriers">
       </div>
-      <div class="film-row-meta">Johnny Kevorkian — 2018</div>
-      <div class="film-row-tags">
-        <span class="tag">Sci-Fi Horror</span>
-        <span class="tag">Isolation</span>
-        <span class="tag">Lockdown</span>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Carriers</span>
+          <span class="film-year">2009</span>
+        </div>
+        <div class="film-meta-row">Alex Pastor, David Pastor</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Pandemic</span>
+          <span class="film-tag">Road Movie</span>
+          <span class="film-tag">Survival</span>
+        </div>
       </div>
-      <div class="film-row-blurb">Family trapped in their house on Christmas Day. TV gives increasingly sinister instructions. Sealed-in paranoia.</div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.8</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Netflix</span>
-      <span class="stream-tag">Shudder</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Alex Pastor, David Pastor</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2009</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.8 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Direct Match</div></div>
+        </div>
+        <p class="film-detail-blurb">Four survivors navigate a pandemic wasteland with strict rules to avoid infection. Moral decay under survival pressure mirrors The Divide's group disintegration. Stars Chris Pine pre-Star Trek fame.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Amazon Prime</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="film-entry anim-target" data-id="4" data-title="It Comes at Night" data-year="2017" data-rating="3.1" data-tier="1">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/hFO4Wdi4dfHiI7JdTrIcVnrKiim.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'" alt="It Comes at Night">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">It Comes at Night</span>
+          <span class="film-year">2017</span>
+        </div>
+        <div class="film-meta-row">Trey Edward Shults</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Post-Apocalyptic</span>
+          <span class="film-tag">Paranoia</span>
+          <span class="film-tag">Isolation</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.1</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Trey Edward Shults</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2017</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.1 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Direct Match</div></div>
+        </div>
+        <p class="film-detail-blurb">Family boarded up in a house during an unspecified plague. Another family arrives. Trust erodes into paranoia and violence. The quintessential 'who can you trust in the apocalypse' film.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+          <span class="stream-badge">Amazon Prime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="film-entry anim-target" data-id="5" data-title="Await Further Instructions" data-year="2018" data-rating="2.5" data-tier="1">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/g8tVe3lWMnFPvhRtfSq7g3xLF1D.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzFiYzI1MGEtYmI4NC00MWNhLTgyZmMtMWJjYTliYjg4YzRjXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_.jpg'" alt="Await Further Instructions">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Await Further Instructions</span>
+          <span class="film-year">2018</span>
+        </div>
+        <div class="film-meta-row">Johnny Kevorkian</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi Horror</span>
+          <span class="film-tag">Isolation</span>
+          <span class="film-tag">Lockdown</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.5</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Johnny Kevorkian</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2018</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.5 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Direct Match</div></div>
+        </div>
+        <p class="film-detail-blurb">Family trapped in their house on Christmas Day by a mysterious barricade. TV gives increasingly sinister instructions. Sealed-in paranoia with family tensions boiling over.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+          <span class="stream-badge">Shudder</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ TIER 2 ═══ -->
-<div class="section-head anim-target">
-  <div class="section-head-grid">
-    <div class="section-num">02</div>
-    <div>
-      <div class="section-label">Claustrophobic Single-Location</div>
-      <div class="section-sublabel">Confined-space tension with group dynamics</div>
-    </div>
+<div class="tier-header" data-tier="2">
+  <div class="tier-header-inner">
+    <div class="tier-num">02</div>
+    <div class="tier-label">Claustrophobic Single-Location<span class="tier-sublabel">Confined-space psychological tension with group dynamics</span></div>
+    <div class="tier-count">5 Films</div>
   </div>
 </div>
 
-<!-- Tier 2: Grid layout -->
-<div class="film-grid">
-  <!-- Coherence -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg'"
-        alt="Coherence">
+<div class="tier-content" data-tier="2">
+
+  <div class="film-entry anim-target" data-id="6" data-title="Coherence" data-year="2013" data-rating="3.7" data-tier="2">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/3BqHM4CVwVUfhWjCqCiDwXlRpec.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjMwOTMxNzQzOF5BMl5BanBnXkFtZTgwNTc3NDI3MjE@._V1_.jpg'" alt="Coherence">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Coherence</span>
+          <span class="film-year">2013</span>
+        </div>
+        <div class="film-meta-row">James Ward Byrkit</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi</span>
+          <span class="film-tag">Psychological</span>
+          <span class="film-tag">Quantum</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.7</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Coherence</div>
-      <div class="film-grid-meta">James Ward Byrkit — 2013</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.7</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Amazon Prime</span>
-        <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">James Ward Byrkit</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2013</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.7 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Single-Location</div></div>
+        </div>
+        <p class="film-detail-blurb">Dinner party goes wrong when a comet passes overhead. Reality fractures. Shot in a single house with improvised dialogue. Pure paranoia and group dynamics in a confined space.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Amazon Prime</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Pontypool -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg'"
-        alt="Pontypool">
+  <div class="film-entry anim-target" data-id="7" data-title="Pontypool" data-year="2008" data-rating="3.3" data-tier="2">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/cVTYmkivxyNRJJUywWFJmxJJJvx.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNTk5MTQ1NDAtZGU4ZS00MTJkLWE4NjctYjk0YTVmNGJlYTY0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg'" alt="Pontypool">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Pontypool</span>
+          <span class="film-year">2008</span>
+        </div>
+        <div class="film-meta-row">Bruce McDonald</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Horror</span>
+          <span class="film-tag">Single-Location</span>
+          <span class="film-tag">Language Virus</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.3</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Pontypool</div>
-      <div class="film-grid-meta">Bruce McDonald — 2008</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.3</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Shudder</span>
-        <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Bruce McDonald</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2008</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.3 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Single-Location</div></div>
+        </div>
+        <p class="film-detail-blurb">Radio DJ trapped in his station as a virus spreads through the English language. Almost entirely one location. The horror is in what you hear, not what you see. Cerebral claustrophobia.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Shudder</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- The Platform -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg'"
-        alt="The Platform">
+  <div class="film-entry anim-target" data-id="8" data-title="The Platform" data-year="2019" data-rating="3.4" data-tier="2">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/8ZX18L5m6rH5tHFBBEQiF3mdgEs.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMzdjNjI5MmYtODhiNS00NTcyLWEzZmMtMzYyMjI2MmRjYzA2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg'" alt="The Platform">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Platform</span>
+          <span class="film-year">2019</span>
+        </div>
+        <div class="film-meta-row">Galder Gaztelu-Urrutia</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi Horror</span>
+          <span class="film-tag">Social Allegory</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.4</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">The Platform</div>
-      <div class="film-grid-meta">Gaztelu-Urrutia — 2019</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.4</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Netflix</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Galder Gaztelu-Urrutia</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2019</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.4 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Single-Location</div></div>
+        </div>
+        <p class="film-detail-blurb">Vertical prison where food descends level by level. Residents on upper floors feast; lower floors starve. Same resource scarcity and moral collapse as The Divide but as brutal social allegory.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Exam -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg'"
-        alt="Exam">
+  <div class="film-entry anim-target" data-id="9" data-title="Exam" data-year="2009" data-rating="3.3" data-tier="2">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc0IPjhAjq1NCb.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkwNTczNTc0Nl5BMl5BanBnXkFtZTcwMjUzNTM0Mg@@._V1_.jpg'" alt="Exam">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Exam</span>
+          <span class="film-year">2009</span>
+        </div>
+        <div class="film-meta-row">Stuart Hazeldine</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Psychological</span>
+          <span class="film-tag">Single-Room</span>
+          <span class="film-tag">Puzzle</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.3</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Exam</div>
-      <div class="film-grid-meta">Stuart Hazeldine — 2009</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.3</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Tubi</span>
-        <span class="stream-tag">Amazon Prime</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Stuart Hazeldine</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2009</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.3 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Single-Location</div></div>
+        </div>
+        <p class="film-detail-blurb">Eight candidates in a single room for a final job interview. One question, 80 minutes, strict rules. Group dynamics fracture under pressure. Confined-space tension distilled to its essence.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Tubi</span>
+          <span class="stream-badge stream-badge--free">Amazon Prime</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- The Bar — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg'"
-      alt="The Bar">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">The Bar</div>
-        <div class="film-row-rating"><span class="dot"></span>3.0</div>
+  <div class="film-entry anim-target" data-id="10" data-title="The Bar" data-year="2017" data-rating="3.0" data-tier="2">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/kGmzfvWUYBbO7UaqRPiEbVkEfnO.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BYzllMjljYWUtOGY2MS00YTI3LTk3NTUtYmZiY2NkNDkxN2Y3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg'" alt="The Bar">
       </div>
-      <div class="film-row-meta">Alex de la Iglesia — 2017</div>
-      <div class="film-row-tags">
-        <span class="tag">Thriller</span>
-        <span class="tag">Dark Comedy</span>
-        <span class="tag">Siege</span>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Bar</span>
+          <span class="film-year">2017</span>
+        </div>
+        <div class="film-meta-row">Alex de la Iglesia</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Thriller</span>
+          <span class="film-tag">Dark Comedy</span>
+          <span class="film-tag">Siege</span>
+        </div>
       </div>
-      <div class="film-row-blurb">Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts. Darkly comic locked-room survival.</div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.0</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Netflix</span>
-      <span class="stream-tag">Amazon Prime</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Alex de la Iglesia</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2017</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.0 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Single-Location</div></div>
+        </div>
+        <p class="film-detail-blurb">Patrons trapped in a Madrid bar after a sniper kills anyone who exits. Paranoia mounts as they turn on each other. Alex de la Iglesia's darkly comic take on the locked-room survival scenario.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+          <span class="stream-badge">Amazon Prime</span>
+        </div>
+      </div>
     </div>
   </div>
+
 </div>
 
 <!-- ═══ TIER 3 ═══ -->
-<div class="section-head anim-target">
-  <div class="section-head-grid">
-    <div class="section-num">03</div>
-    <div>
-      <div class="section-label">Survival Pressure Cookers</div>
-      <div class="section-sublabel">High-concept scenarios with moral dilemmas</div>
-    </div>
+<div class="tier-header" data-tier="3">
+  <div class="tier-header-inner">
+    <div class="tier-num">03</div>
+    <div class="tier-label">Survival Pressure Cookers<span class="tier-sublabel">High-concept survival with moral dilemmas</span></div>
+    <div class="tier-count">5 Films</div>
   </div>
 </div>
 
-<!-- Circle — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'"
-      alt="Circle">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Circle</div>
-        <div class="film-row-rating"><span class="dot"></span>2.9</div>
-      </div>
-      <div class="film-row-meta">Aaron Hann, Mario Miscione — 2015</div>
-      <div class="film-row-tags">
-        <span class="tag">Sci-Fi</span>
-        <span class="tag">Social Experiment</span>
-        <span class="tag">Voting</span>
-      </div>
-      <div class="film-row-blurb">50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology with no escape.</div>
-    </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Netflix</span>
-      <span class="stream-tag">Tubi</span>
-    </div>
-  </div>
-</div>
+<div class="tier-content" data-tier="3">
 
-<!-- Tier 3: Grid -->
-<div class="film-grid">
-  <!-- Would You Rather -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg'"
-        alt="Would You Rather">
+  <div class="film-entry anim-target" data-id="11" data-title="Circle" data-year="2015" data-rating="2.9" data-tier="3">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/eZETmLiVhdepTqRqEiIfU6hIUf4.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjI3ODkzNDk5MF5BMl5BanBnXkFtZTgwNjQ0NTczMjI@._V1_.jpg'" alt="Circle">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Circle</span>
+          <span class="film-year">2015</span>
+        </div>
+        <div class="film-meta-row">Aaron Hann, Mario Miscione</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi</span>
+          <span class="film-tag">Social Experiment</span>
+          <span class="film-tag">Survival</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.9</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Would You Rather</div>
-      <div class="film-grid-meta">David Guy Levy — 2012</div>
-      <div class="film-grid-rating"><span class="dot"></span>2.8</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Tubi</span>
-        <span class="stream-tag">Amazon Prime</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Aaron Hann, Mario Miscione</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2015</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.9 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Survival</div></div>
+        </div>
+        <p class="film-detail-blurb">50 strangers in a circle. Every 2 minutes, one dies by group vote. Pure survival psychology with no escape. Strips group dynamics to the absolute minimum.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Netflix</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Fermat's Room -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg'"
-        alt="Fermat's Room">
+  <div class="film-entry anim-target" data-id="12" data-title="Would You Rather" data-year="2012" data-rating="2.8" data-tier="3">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/nWRlXhTygNiB6R3GcCkTUJJhXjj.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTkzNjEzNjMwM15BMl5BanBnXkFtZTcwNjMzOTUzOQ@@._V1_.jpg'" alt="Would You Rather">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Would You Rather</span>
+          <span class="film-year">2012</span>
+        </div>
+        <div class="film-meta-row">David Guy Levy</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Horror</span>
+          <span class="film-tag">Survival Game</span>
+          <span class="film-tag">Sadism</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.8</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Fermat's Room</div>
-      <div class="film-grid-meta">Piedrahita & Sopena — 2007</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.2</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Amazon Prime</span>
-        <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">David Guy Levy</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2012</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.8 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Survival</div></div>
+        </div>
+        <p class="film-detail-blurb">Desperate guests at a rich man's dinner party forced into increasingly brutal 'would you rather' choices. Confined space, escalating violence, moral compromise under duress.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Tubi</span>
+          <span class="stream-badge stream-badge--free">Amazon Prime</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Level 16 + The Incident — index list -->
-<div class="index-list">
-  <div class="index-item anim-target">
-    <div class="index-num">14</div>
-    <div class="index-title-wrap">
-      <div class="index-title">Level 16</div>
-      <div class="index-meta">Danishka Esterhazy — 2018 · Shudder, Tubi</div>
+  <div class="film-entry anim-target" data-id="13" data-title="Fermat's Room" data-year="2007" data-rating="3.2" data-tier="3">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/3FxdjWjaGHUr5OxVx8X0RqoUcCL.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTQzOTg1NzY3OF5BMl5BanBnXkFtZTcwODgyNjMwMg@@._V1_.jpg'" alt="Fermat's Room">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Fermat's Room</span>
+          <span class="film-year">2007</span>
+        </div>
+        <div class="film-meta-row">Luis Piedrahita, Rodrigo Sopena</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Thriller</span>
+          <span class="film-tag">Puzzle</span>
+          <span class="film-tag">Shrinking Room</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.2</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="index-rating"><span class="dot"></span>3.0</div>
-  </div>
-  <div class="index-item anim-target">
-    <div class="index-num">15</div>
-    <div class="index-title-wrap">
-      <div class="index-title">The Incident</div>
-      <div class="index-meta">Isaac Ezban — 2014 · Amazon Prime, Tubi</div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">L. Piedrahita, R. Sopena</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2007</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.2 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Survival</div></div>
+        </div>
+        <p class="film-detail-blurb">Four mathematicians locked in a room that shrinks unless they solve puzzles. Literal claustrophobia as survival mechanism. Spanish-language gem with English-friendly accessibility.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Amazon Prime</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
+      </div>
     </div>
-    <div class="index-rating"><span class="dot"></span>3.1</div>
   </div>
+
+  <div class="film-entry anim-target" data-id="14" data-title="Level 16" data-year="2018" data-rating="3.0" data-tier="3">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/npjXw0Y8OSlZzZfrVK1m5GkRXsi.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTYzOTE3MDMwN15BMl5BanBnXkFtZTgwMDM0MzA5NjM@._V1_.jpg'" alt="Level 16">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Level 16</span>
+          <span class="film-year">2018</span>
+        </div>
+        <div class="film-meta-row">Danishka Esterhazy</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Dystopian</span>
+          <span class="film-tag">Institutional</span>
+          <span class="film-tag">Escape</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.0</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Danishka Esterhazy</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2018</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.0 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Survival</div></div>
+        </div>
+        <p class="film-detail-blurb">Girls in a mysterious boarding school discover the horrifying purpose of their captivity. Institutional claustrophobia with a body-horror twist. Clean, clinical dread.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Shudder</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="film-entry anim-target" data-id="15" data-title="The Incident" data-year="2014" data-rating="3.1" data-tier="3">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/dE1gNMHfxEJcCIFEVLFPQDSGEjA.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjEyNDI3NDkwN15BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg'" alt="The Incident">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Incident</span>
+          <span class="film-year">2014</span>
+        </div>
+        <div class="film-meta-row">Isaac Ezban</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi Horror</span>
+          <span class="film-tag">Infinite Loop</span>
+          <span class="film-tag">Existential</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.1</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Isaac Ezban</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2014</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.1 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Survival</div></div>
+        </div>
+        <p class="film-detail-blurb">Two groups trapped in infinite loops — one in a stairwell, one on a highway. Time passes but space repeats. Existential claustrophobia. Mexican indie gem.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Amazon Prime</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ TIER 4 ═══ -->
-<div class="section-head anim-target">
-  <div class="section-head-grid">
-    <div class="section-num">04</div>
-    <div>
-      <div class="section-label">Adjacent Deep Cuts</div>
-      <div class="section-sublabel">Shares DNA but diverges in subgenre</div>
-    </div>
+<div class="tier-header" data-tier="4">
+  <div class="tier-header-inner">
+    <div class="tier-num">04</div>
+    <div class="tier-label">Adjacent Deep Cuts<span class="tier-sublabel">Shares DNA but diverges in subgenre or setting</span></div>
+    <div class="tier-count">5 Films</div>
   </div>
 </div>
 
-<!-- Pandorum — row -->
-<div class="film-row anim-target">
-  <div class="film-row-poster">
-    <img src="https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg"
-      onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg'"
-      alt="Pandorum">
-  </div>
-  <div class="film-row-info">
-    <div>
-      <div class="film-row-top">
-        <div class="film-row-title">Pandorum</div>
-        <div class="film-row-rating"><span class="dot"></span>3.2</div>
-      </div>
-      <div class="film-row-meta">Christian Alvart — 2009</div>
-      <div class="film-row-tags">
-        <span class="tag">Sci-Fi Horror</span>
-        <span class="tag">Space</span>
-        <span class="tag">Amnesia</span>
-      </div>
-      <div class="film-row-blurb">Crew wakes on a spaceship with no memory. Something is hunting them in the dark. Claustrophobic corridors and psychological breakdown.</div>
-    </div>
-    <div class="film-row-bottom">
-      <span class="stream-tag">Amazon Prime</span>
-      <span class="stream-tag">Tubi</span>
-    </div>
-  </div>
-</div>
+<div class="tier-content" data-tier="4">
 
-<!-- Tier 4: Grid -->
-<div class="film-grid">
-  <!-- The Void -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg'"
-        alt="The Void">
+  <div class="film-entry anim-target" data-id="16" data-title="Pandorum" data-year="2009" data-rating="3.2" data-tier="4">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/ihLrq0ZHQFK7i7Lh3YIjvHJiN9L.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BNDhmMjZlNDEtYTk5Mi00N2NhLTgyOTktMDlmNGY0NmIwYzJjXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg'" alt="Pandorum">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Pandorum</span>
+          <span class="film-year">2009</span>
+        </div>
+        <div class="film-meta-row">Christian Alvart</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Sci-Fi Horror</span>
+          <span class="film-tag">Space</span>
+          <span class="film-tag">Amnesia</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.2</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">The Void</div>
-      <div class="film-grid-meta">Gillespie & Kostanski — 2016</div>
-      <div class="film-grid-rating"><span class="dot"></span>3.0</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Shudder</span>
-        <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Christian Alvart</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2009</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.2 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Adjacent</div></div>
+        </div>
+        <p class="film-detail-blurb">Crew wakes on a spaceship with no memory. Something is hunting them in the dark. Claustrophobic corridors, resource scarcity, and psychological breakdown — The Divide in space.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Amazon Prime</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Breathing Room -->
-  <div class="film-grid-item anim-target">
-    <div class="film-grid-poster">
-      <img src="https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg"
-        onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg'"
-        alt="Breathing Room">
+  <div class="film-entry anim-target" data-id="17" data-title="The Void" data-year="2016" data-rating="3.0" data-tier="4">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/lWn8makNhCCrwetSTl5qjSCPVSo.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjUyMjgzNTcyMl5BMl5BanBnXkFtZTgwMjY0NjIxNzE@._V1_.jpg'" alt="The Void">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Void</span>
+          <span class="film-year">2016</span>
+        </div>
+        <div class="film-meta-row">Jeremy Gillespie, Steven Kostanski</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Cosmic Horror</span>
+          <span class="film-tag">Siege</span>
+          <span class="film-tag">Lovecraftian</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">3.0</span>
+        <span class="film-rating-dot"></span>
+      </div>
     </div>
-    <div class="film-grid-info">
-      <div class="film-grid-title">Breathing Room</div>
-      <div class="film-grid-meta">Suits & Cowan — 2008</div>
-      <div class="film-grid-rating"><span class="dot"></span>2.4</div>
-      <div class="film-grid-streaming">
-        <span class="stream-tag">Tubi</span>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">J. Gillespie, S. Kostanski</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2016</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">3.0 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Adjacent</div></div>
+        </div>
+        <p class="film-detail-blurb">People trapped in a hospital surrounded by cultists. Cosmic horror seeps in. Practical effects, siege dynamics, escalating dread. Carpenter-esque.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Shudder</span>
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="film-entry anim-target" data-id="18" data-title="Breathing Room" data-year="2008" data-rating="2.4" data-tier="4">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/nIXr3cYqFVSvHDiFqSEDfiGRxFz.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMTYzMDUwMDEzOV5BMl5BanBnXkFtZTcwMjk2OTkyMg@@._V1_.jpg'" alt="Breathing Room">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">Breathing Room</span>
+          <span class="film-year">2008</span>
+        </div>
+        <div class="film-meta-row">John Suits, Gabriel Cowan</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Thriller</span>
+          <span class="film-tag">Survival Game</span>
+          <span class="film-tag">Puzzle</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.4</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">John Suits, Gabriel Cowan</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2008</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.4 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Adjacent</div></div>
+        </div>
+        <p class="film-detail-blurb">Strangers wake in a locked white room wearing explosive collars. Must figure out the rules or die. Ultra-low-budget but effective confined-space tension.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Tubi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="film-entry anim-target" data-id="19" data-title="The Hole" data-year="2001" data-rating="2.9" data-tier="4">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/9xBfU0mFv7d9GI9kYTOH2GtVUMR.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BMjE0MTk3OTQ3MF5BMl5BanBnXkFtZTYwNjI0Nzc5._V1_.jpg'" alt="The Hole">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Hole</span>
+          <span class="film-year">2001</span>
+        </div>
+        <div class="film-meta-row">Nick Hamm</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Psychological</span>
+          <span class="film-tag">Bunker</span>
+          <span class="film-tag">Unreliable Narrator</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.9</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Nick Hamm</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2001</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.9 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Adjacent</div></div>
+        </div>
+        <p class="film-detail-blurb">Four teens voluntarily lock themselves in a WWII bunker for a party weekend. Things go wrong. Early Keira Knightley. Voluntary confinement turning deadly.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge">Amazon Prime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="film-entry anim-target" data-id="20" data-title="The Bunker" data-year="2024" data-rating="2.6" data-tier="4">
+    <div class="film-summary">
+      <div class="film-poster-cell">
+        <img src="https://image.tmdb.org/t/p/w500/v0cFjMoPFRSVJoOx1rPfjmGxqQW.jpg" onerror="this.onerror=null;this.src='https://m.media-amazon.com/images/M/MV5BODMxMjE0MmQtZjE4OC00NzQ4LWExZjAtOGRmZWRiYWViNTdmXkEyXkFqcGc@._V1_.jpg'" alt="The Bunker">
+      </div>
+      <div class="film-info-cell">
+        <div class="film-title-row">
+          <span class="film-title">The Bunker</span>
+          <span class="film-year">2024</span>
+        </div>
+        <div class="film-meta-row">Adrian Langley</div>
+        <div class="film-tags-row">
+          <span class="film-tag">Post-Apocalyptic</span>
+          <span class="film-tag">Bunker</span>
+          <span class="film-tag">Indie</span>
+        </div>
+      </div>
+      <div class="film-rating-cell">
+        <span class="film-rating-num">2.6</span>
+        <span class="film-rating-dot"></span>
+      </div>
+    </div>
+    <div class="film-detail">
+      <div class="film-detail-inner">
+        <div class="film-detail-grid">
+          <div class="detail-field"><div class="detail-label">Director</div><div class="detail-value">Adrian Langley</div></div>
+          <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">2024</div></div>
+          <div class="detail-field"><div class="detail-label">Rating</div><div class="detail-value">2.6 / 5</div></div>
+          <div class="detail-field"><div class="detail-label">Tier</div><div class="detail-value">Adjacent</div></div>
+        </div>
+        <p class="film-detail-blurb">Survivors in a bunker after nuclear event. Resources dwindle, tensions rise, paranoia sets in. The most direct spiritual successor to The Divide in recent years.</p>
+        <div class="film-detail-streaming">
+          <span class="stream-badge stream-badge--free">Tubi</span>
+          <span class="stream-badge stream-badge--free">Amazon Prime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- The Hole + The Bunker — index list -->
-<div class="index-list">
-  <div class="index-item anim-target">
-    <div class="index-num">19</div>
-    <div class="index-title-wrap">
-      <div class="index-title">The Hole</div>
-      <div class="index-meta">Nick Hamm — 2001 · Amazon Prime</div>
-    </div>
-    <div class="index-rating"><span class="dot"></span>2.9</div>
+<!-- DATA SUMMARY -->
+<div class="data-summary anim-target">
+  <div class="data-cell">
+    <div class="data-num">20</div>
+    <div class="data-label">Films</div>
   </div>
-  <div class="index-item anim-target">
-    <div class="index-num">20</div>
-    <div class="index-title-wrap">
-      <div class="index-title">The Bunker</div>
-      <div class="index-meta">Adrian Langley — 2024 · Tubi, Amazon Prime</div>
-    </div>
-    <div class="index-rating"><span class="dot"></span>2.6</div>
+  <div class="data-cell">
+    <div class="data-num">4</div>
+    <div class="data-label">Tiers</div>
+  </div>
+  <div class="data-cell">
+    <div class="data-num">3.0</div>
+    <div class="data-label">Avg Rating</div>
+  </div>
+  <div class="data-cell">
+    <div class="data-num">23</div>
+    <div class="data-label">Year Span</div>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-logo">R<em>E</em>EL</div>
-  <div class="footer-sub">A systematic film index</div>
-  <div class="footer-count">20 Films — 4 Tiers — Curated from The Divide</div>
+  <div class="footer-sub">A systematic film index curated from The Divide (2011)</div>
 </footer>
+
+</main>
 
 <script>
 (function() {
   'use strict';
 
-  // ── PARALLAX HERO ──
-  var heroImg = document.getElementById('heroImg');
+  // ── SCROLL PROGRESS BAR ──
+  var progressBar = document.getElementById('scrollProgressBar');
   window.addEventListener('scroll', function() {
-    var y = window.scrollY;
-    if (y < 600) {
-      heroImg.style.transform = 'scale(' + (1.05 + y * 0.0002) + ') translateY(' + (y * 0.15) + 'px)';
-    }
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    progressBar.style.width = pct + '%';
   }, { passive: true });
 
   // ── SCROLL ANIMATIONS ──
@@ -1241,35 +1417,149 @@ body { -ms-overflow-style: none; scrollbar-width: none; }
         observer.unobserve(entry.target);
       }
     });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -30px 0px'
-  });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 
   document.querySelectorAll('.anim-target').forEach(function(el) {
     observer.observe(el);
   });
 
-  // ── NAV TAB INTERACTION ──
-  var tabs = document.querySelectorAll('.nav-tab');
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      tabs.forEach(function(t) { t.classList.remove('active'); });
-      tab.classList.add('active');
-    });
-  });
+  // ── STICKY TIER HEADERS — compact on scroll ──
+  var tierHeaders = document.querySelectorAll('.tier-header');
+  var headerHeight = 72;
 
-  // ── FILM ROW EXPAND/COLLAPSE BLURB ──
-  document.querySelectorAll('.film-row-blurb').forEach(function(blurb) {
-    blurb.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (blurb.style.webkitLineClamp === 'unset') {
-        blurb.style.webkitLineClamp = '2';
+  function checkTierHeaders() {
+    tierHeaders.forEach(function(th) {
+      var rect = th.getBoundingClientRect();
+      if (rect.top <= headerHeight + 2) {
+        th.classList.add('compact');
       } else {
-        blurb.style.webkitLineClamp = 'unset';
+        th.classList.remove('compact');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', checkTierHeaders, { passive: true });
+
+  // ── CLICK TO EXPAND ──
+  document.querySelectorAll('.film-summary').forEach(function(summary) {
+    summary.addEventListener('click', function() {
+      var entry = summary.parentElement;
+      var wasExpanded = entry.classList.contains('expanded');
+
+      // Close all others
+      document.querySelectorAll('.film-entry.expanded').forEach(function(e) {
+        e.classList.remove('expanded');
+      });
+
+      // Toggle this one
+      if (!wasExpanded) {
+        entry.classList.add('expanded');
       }
     });
   });
+
+  // ── FILTER/SORT CONTROLS ──
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var allEntries = Array.prototype.slice.call(document.querySelectorAll('.film-entry'));
+  var tierContents = document.querySelectorAll('.tier-content');
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+
+      var sortType = btn.getAttribute('data-sort');
+
+      if (sortType === 'default') {
+        // Restore original tier-based order
+        tierHeaders.forEach(function(h) { h.style.display = ''; });
+        tierContents.forEach(function(tc) {
+          tc.style.display = '';
+          // Re-append in original order
+          var entries = Array.prototype.slice.call(tc.querySelectorAll('.film-entry'));
+          entries.sort(function(a, b) {
+            return parseInt(a.getAttribute('data-id')) - parseInt(b.getAttribute('data-id'));
+          });
+          entries.forEach(function(e) { tc.appendChild(e); });
+        });
+        return;
+      }
+
+      // For sorted views, hide tier headers and move all entries into tier-content[data-tier="1"]
+      tierHeaders.forEach(function(h, i) {
+        h.style.display = i === 0 ? '' : 'none';
+      });
+
+      tierContents.forEach(function(tc, i) {
+        tc.style.display = i === 0 ? '' : 'none';
+      });
+
+      var firstContent = tierContents[0];
+      var sorted = allEntries.slice();
+
+      if (sortType === 'rating') {
+        sorted.sort(function(a, b) {
+          return parseFloat(b.getAttribute('data-rating')) - parseFloat(a.getAttribute('data-rating'));
+        });
+        tierHeaders[0].querySelector('.tier-label').childNodes[0].textContent = 'Sorted by Rating';
+        tierHeaders[0].querySelector('.tier-sublabel').textContent = 'Highest to lowest Letterboxd rating';
+      } else if (sortType === 'year') {
+        sorted.sort(function(a, b) {
+          return parseInt(b.getAttribute('data-year')) - parseInt(a.getAttribute('data-year'));
+        });
+        tierHeaders[0].querySelector('.tier-label').childNodes[0].textContent = 'Sorted by Year';
+        tierHeaders[0].querySelector('.tier-sublabel').textContent = 'Most recent first';
+      } else if (sortType === 'alpha') {
+        sorted.sort(function(a, b) {
+          return a.getAttribute('data-title').localeCompare(b.getAttribute('data-title'));
+        });
+        tierHeaders[0].querySelector('.tier-label').childNodes[0].textContent = 'Alphabetical';
+        tierHeaders[0].querySelector('.tier-sublabel').textContent = 'A through Z';
+      }
+
+      sorted.forEach(function(e) { firstContent.appendChild(e); });
+
+      // Reset header for "All Films"
+      if (sortType === 'default') {
+        tierHeaders[0].querySelector('.tier-label').childNodes[0].textContent = 'Direct Matches';
+        tierHeaders[0].querySelector('.tier-sublabel').textContent = 'Closest in tone, setting, and psychological intensity';
+      }
+    });
+  });
+
+  // Restore tier labels when switching back to default
+  var originalLabels = [];
+  tierHeaders.forEach(function(h) {
+    var labelNode = h.querySelector('.tier-label');
+    originalLabels.push({
+      label: labelNode.childNodes[0].textContent,
+      sub: h.querySelector('.tier-sublabel').textContent
+    });
+  });
+
+  filterBtns[0].addEventListener('click', function() {
+    tierHeaders.forEach(function(h, i) {
+      h.style.display = '';
+      h.querySelector('.tier-label').childNodes[0].textContent = originalLabels[i].label;
+      h.querySelector('.tier-sublabel').textContent = originalLabels[i].sub;
+    });
+    tierContents.forEach(function(tc) { tc.style.display = ''; });
+    // Re-sort entries back to original positions
+    allEntries.forEach(function(entry) {
+      var tier = entry.getAttribute('data-tier');
+      var content = document.querySelector('.tier-content[data-tier="' + tier + '"]');
+      content.appendChild(entry);
+    });
+    allEntries.sort(function(a, b) {
+      return parseInt(a.getAttribute('data-id')) - parseInt(b.getAttribute('data-id'));
+    });
+    allEntries.forEach(function(entry) {
+      var tier = entry.getAttribute('data-tier');
+      var content = document.querySelector('.tier-content[data-tier="' + tier + '"]');
+      content.appendChild(entry);
+    });
+  });
+
 })();
 </script>
 </body>
